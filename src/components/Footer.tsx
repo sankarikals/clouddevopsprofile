@@ -17,17 +17,23 @@ const Footer = () => {
               personalized mentoring, real-world projects, and industry-focused training.
             </p>
             <div className="flex space-x-4">
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-2"
+                onClick={() => window.open('https://www.linkedin.com/in/akhil2308/', '_blank')}
+              >
                 <Linkedin className="h-4 w-4" />
                 LinkedIn
               </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <Github className="h-4 w-4" />
-                GitHub
-              </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-2"
+                onClick={() => window.open('https://preplaced.in/profile/akhil-mittal', '_blank')}
+              >
                 <BookOpen className="h-4 w-4" />
-                Medium
+                Preplaced
               </Button>
             </div>
           </div>
@@ -60,6 +66,14 @@ const Footer = () => {
                   Blog
                 </button>
               </li>
+               <li>
+                <button 
+                  onClick={() => document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Reviews
+                </button>
+              </li>
               <li>
                 <button 
                   onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
@@ -85,7 +99,7 @@ const Footer = () => {
               </div>
               <Button 
                 className="w-full bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => window.open('https://wa.me/your-number', '_blank')}
+                onClick={() => window.open('https://wa.me/917259452403', '_blank')}
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 WhatsApp

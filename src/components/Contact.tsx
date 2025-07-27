@@ -79,7 +79,7 @@ const Contact = () => {
       `Experience: ${formData.experience} years\n` +
       `Aspirations: ${formData.aspirations}`
     );
-    window.open(`https://wa.me/your-number?text=${message}`, '_blank');
+    window.open(`https://wa.me/917259452403?text=${message}`, '_blank');
   };
 
   return (

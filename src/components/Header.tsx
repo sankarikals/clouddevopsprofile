@@ -31,6 +31,12 @@ const Header = () => {
             Blog
           </button>
           <button 
+            onClick={() => scrollToSection('reviews')}
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            Reviews
+          </button>
+          <button 
             onClick={() => scrollToSection('contact')}
             className="text-muted-foreground hover:text-primary transition-colors"
           >
@@ -42,7 +48,7 @@ const Header = () => {
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => window.open('https://wa.me/your-number', '_blank')}
+            onClick={() => window.open('https://wa.me/917259452403', '_blank')}
             className="hidden sm:flex items-center gap-2"
           >
             <MessageCircle className="h-4 w-4" />

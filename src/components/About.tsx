@@ -36,19 +36,24 @@ const About = () => {
                   <p className="text-muted-foreground mb-6">10+ Years Industry Experience</p>
                   
                   <div className="flex justify-center space-x-4">
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center gap-2"
+                      onClick={() => window.open('https://www.linkedin.com/in/akhil2308/', '_blank')}
+                    >
                       <Linkedin className="h-4 w-4" />
                       LinkedIn
                       <ExternalLink className="h-3 w-3" />
                     </Button>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
-                      <Github className="h-4 w-4" />
-                      GitHub
-                      <ExternalLink className="h-3 w-3" />
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center gap-2"
+                      onClick={() => window.open('https://preplaced.in/profile/akhil-mittal', '_blank')}
+                    >
                       <BookOpen className="h-4 w-4" />
-                      Medium
+                      Preplaced
                       <ExternalLink className="h-3 w-3" />
                     </Button>
                   </div>
