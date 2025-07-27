@@ -40,19 +40,19 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <Button 
               size="lg" 
-              onClick={() => scrollToSection('courses')}
+              onClick={() => scrollToSection('voice-assistant')}
               className="bg-gradient-hero shadow-hero text-lg px-8 py-6 group"
             >
-              Explore Courses
+              🎤 Try AI Voice Assistant
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button 
               variant="outline" 
               size="lg"
-              onClick={() => scrollToSection('contact')}
+              onClick={() => scrollToSection('courses')}
               className="text-lg px-8 py-6"
             >
-              Book Free Consultation
+              Explore Courses
             </Button>
           </div>
 
