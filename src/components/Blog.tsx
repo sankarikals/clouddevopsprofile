@@ -2,11 +2,36 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, ArrowRight, BookOpen, Settings } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Calendar, ArrowRight, BookOpen, Settings, Lock } from "lucide-react";
 import BlogAdmin from "./BlogAdmin";
 
 const Blog = () => {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
+  
+  const handleAdminLogin = () => {
+    // Simple password check - in production, use proper authentication
+    if (adminPassword === "akhil2308") {
+      setIsAdmin(true);
+      setShowAdminPanel(true);
+      setShowAuthDialog(false);
+      setAdminPassword("");
+    } else {
+      alert("Incorrect password!");
+    }
+  };
+
+  const handleManageClick = () => {
+    if (isAdmin) {
+      setShowAdminPanel(true);
+    } else {
+      setShowAuthDialog(true);
+    }
+  };
   // Placeholder blog posts - in a real app, these would come from a CMS or API
   const blogPosts = [
     {
@@ -62,7 +87,7 @@ const Blog = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setShowAdminPanel(true)}
+            onClick={handleManageClick}
             className="hidden md:flex items-center gap-2 mt-2"
           >
             <Settings className="h-4 w-4" />
@@ -155,6 +180,44 @@ const Blog = () => {
         isVisible={showAdminPanel} 
         onClose={() => setShowAdminPanel(false)} 
       />
+      
+      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lock className="h-5 w-5" />
+              Admin Authentication
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-muted-foreground">
+              Enter admin password to manage blog content:
+            </p>
+            <Input
+              type="password"
+              placeholder="Enter admin password"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+            />
+            <div className="flex gap-2">
+              <Button onClick={handleAdminLogin} className="flex-1">
+                Login
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowAuthDialog(false);
+                  setAdminPassword("");
+                }}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
