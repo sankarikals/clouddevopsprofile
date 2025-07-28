@@ -1,86 +1,155 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, Star, CheckCircle, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Clock, Users, Star, CheckCircle, ArrowRight, Settings, Lock } from "lucide-react";
+import CourseManagement from "./CourseManagement";
+
+interface Course {
+  id: number;
+  title: string;
+  description: string;
+  duration: string;
+  level: string;
+  price: string;
+  originalPrice?: string;
+  features: string[];
+  isPopular: boolean;
+  published: boolean;
+}
 
 const Courses = () => {
-  const courses = [
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
+  const [courses, setCourses] = useState<Course[]>([
     {
-      id: "interview-coaching",
-      title: "Interview Mastery Program",
-      duration: "1 Month",
-      price: "$299",
-      description: "Intensive interview preparation focused on technical and behavioral questions for DevOps roles.",
-      features: [
-        "Mock interviews with real scenarios",
-        "Resume optimization",
-        "System design for DevOps",
-        "Behavioral question preparation",
-        "Salary negotiation tips",
-        "Job search strategy"
-      ],
-      popular: false,
-      level: "All Levels"
-    },
-    {
-      id: "real-time-projects",
-      title: "Real-Time DevOps Projects",
-      duration: "2 Months",
-      price: "$599",
-      description: "Build production-ready projects using latest DevOps tools and cloud technologies.",
-      features: [
-        "3 end-to-end projects",
-        "CI/CD pipeline implementation",
-        "Kubernetes deployment",
-        "Infrastructure as Code",
-        "Monitoring and logging setup",
-        "Portfolio development"
-      ],
-      popular: true,
-      level: "Intermediate"
-    },
-    {
-      id: "full-coaching",
+      id: 1,
       title: "Complete DevOps Mastery",
-      duration: "4 Months",
-      price: "$1,199",
-      description: "Comprehensive program covering everything from basics to advanced DevOps practices.",
+      description: "Master the complete DevOps lifecycle with hands-on projects and real-world scenarios.",
+      duration: "12 weeks",
+      level: "Beginner to Advanced",
+      price: "₹15,000",
+      originalPrice: "₹25,000",
       features: [
-        "Fundamentals to advanced topics",
-        "Cloud architecture design",
-        "Security best practices",
-        "Performance optimization",
-        "Team leadership skills",
-        "Career guidance & placement support"
+        "CI/CD Pipeline Setup",
+        "Docker & Kubernetes",
+        "AWS/Azure Cloud Platforms",
+        "Infrastructure as Code",
+        "Monitoring & Logging",
+        "Security Best Practices",
+        "Live Projects",
+        "Job Assistance"
       ],
-      popular: false,
-      level: "Beginner to Advanced"
+      isPopular: true,
+      published: true
+    },
+    {
+      id: 2,
+      title: "Cloud Architecture Fundamentals",
+      description: "Learn cloud-native architectures and deployment strategies on major cloud platforms.",
+      duration: "8 weeks",
+      level: "Intermediate",
+      price: "₹12,000",
+      features: [
+        "Multi-cloud Strategy",
+        "Serverless Computing",
+        "Cloud Security",
+        "Cost Optimization",
+        "Migration Strategies",
+        "Hands-on Labs"
+      ],
+      isPopular: false,
+      published: true
+    },
+    {
+      id: 3,
+      title: "Advanced Kubernetes Operations",
+      description: "Deep dive into Kubernetes orchestration, scaling, and enterprise-grade deployments.",
+      duration: "6 weeks",
+      level: "Advanced",
+      price: "₹10,000",
+      features: [
+        "Custom Controllers",
+        "Helm Charts",
+        "Service Mesh",
+        "Advanced Networking",
+        "Troubleshooting",
+        "Production Scenarios"
+      ],
+      isPopular: false,
+      published: true
     }
-  ];
+  ]);
 
   const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
+
+  const handleAdminLogin = () => {
+    if (adminPassword === "akhil2308") {
+      setIsAdmin(true);
+      setShowAdminPanel(true);
+      setShowAuthDialog(false);
+      setAdminPassword("");
+    } else {
+      alert("Incorrect password!");
+    }
+  };
+
+  const handleManageClick = () => {
+    if (isAdmin) {
+      setShowAdminPanel(true);
+    } else {
+      setShowAuthDialog(true);
+    }
+  };
+
+  const handleCoursesUpdate = (updatedCourses: Course[]) => {
+    setCourses(updatedCourses);
+  };
+
+  // Filter only published courses for display
+  const publishedCourses = courses.filter(course => course.published);
 
   return (
     <section id="courses" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Transform Your Career</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose the perfect program to accelerate your DevOps journey
-          </p>
+          <div className="flex justify-between items-center">
+            <div className="flex-1 text-center">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Transform Your Career</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Choose the perfect program to accelerate your DevOps journey
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleManageClick}
+              className="hidden md:flex items-center gap-2"
+            >
+              <Settings className="h-4 w-4" />
+              Manage Courses
+            </Button>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course) => (
+          {publishedCourses.map((course) => (
             <Card 
               key={course.id} 
               className={`relative bg-gradient-card shadow-card border-0 hover:shadow-hero transition-all duration-300 ${
-                course.popular ? 'ring-2 ring-primary' : ''
+                course.isPopular ? 'ring-2 ring-primary' : ''
               }`}
             >
-              {course.popular && (
+              {course.isPopular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <Badge className="bg-gradient-hero shadow-hero">
                     <Star className="h-3 w-3 mr-1" />
@@ -105,6 +174,9 @@ const Courses = () => {
               <CardContent className="space-y-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-primary">{course.price}</div>
+                  {course.originalPrice && (
+                    <div className="text-sm text-muted-foreground line-through">{course.originalPrice}</div>
+                  )}
                   <div className="text-sm text-muted-foreground">One-time payment</div>
                 </div>
 
@@ -122,11 +194,11 @@ const Courses = () => {
                 <Button 
                   onClick={scrollToContact}
                   className={`w-full group ${
-                    course.popular 
+                    course.isPopular 
                       ? 'bg-gradient-hero shadow-hero' 
                       : ''
                   }`}
-                  variant={course.popular ? 'default' : 'outline'}
+                  variant={course.isPopular ? 'default' : 'outline'}
                 >
                   Enroll Now
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -148,6 +220,51 @@ const Courses = () => {
             Get Personalized Recommendation
           </Button>
         </div>
+
+        <CourseManagement 
+          isVisible={showAdminPanel} 
+          onClose={() => setShowAdminPanel(false)}
+          onCoursesUpdate={handleCoursesUpdate}
+          initialCourses={courses}
+        />
+        
+        <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Lock className="h-5 w-5" />
+                Admin Authentication
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p className="text-muted-foreground">
+                Enter admin password to manage course content:
+              </p>
+              <Input
+                type="password"
+                placeholder="Enter admin password"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+              />
+              <div className="flex gap-2">
+                <Button onClick={handleAdminLogin} className="flex-1">
+                  Login
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowAuthDialog(false);
+                    setAdminPassword("");
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );
