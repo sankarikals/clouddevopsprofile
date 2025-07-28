@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, ArrowRight, BookOpen } from "lucide-react";
+import { Calendar, ArrowRight, BookOpen, Settings } from "lucide-react";
+import BlogAdmin from "./BlogAdmin";
 
 const Blog = () => {
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
   // Placeholder blog posts - in a real app, these would come from a CMS or API
   const blogPosts = [
     {
@@ -49,11 +52,22 @@ const Blog = () => {
   return (
     <section id="blog" className="py-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Learning Insights</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Stay updated with the latest DevOps trends, tutorials, and industry insights
-          </p>
+        <div className="flex justify-between items-start mb-16">
+          <div className="text-center flex-1">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Learning Insights</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Stay updated with the latest DevOps trends, tutorials, and industry insights
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowAdminPanel(true)}
+            className="hidden md:flex items-center gap-2 mt-2"
+          >
+            <Settings className="h-4 w-4" />
+            Manage
+          </Button>
         </div>
 
         {/* Category filters */}
@@ -136,6 +150,11 @@ const Blog = () => {
           </Button>
         </div>
       </div>
+      
+      <BlogAdmin 
+        isVisible={showAdminPanel} 
+        onClose={() => setShowAdminPanel(false)} 
+      />
     </section>
   );
 };

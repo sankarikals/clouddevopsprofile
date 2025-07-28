@@ -31,12 +31,6 @@ const Header = () => {
             Blog
           </button>
           <button 
-            onClick={() => window.location.href = '/admin'}
-            className="text-muted-foreground hover:text-primary transition-colors"
-          >
-            Admin
-          </button>
-          <button 
             onClick={() => scrollToSection('reviews')}
             className="text-muted-foreground hover:text-primary transition-colors"
           >
