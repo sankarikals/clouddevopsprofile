@@ -154,7 +154,8 @@ const Courses = () => {
 
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">₹{course.price.toLocaleString()}</div>
+                  <div className="text-lg text-muted-foreground line-through">${Math.round(course.price * 1.5).toLocaleString()}</div>
+                  <div className="text-3xl font-bold text-primary">${course.price.toLocaleString()}</div>
                   <div className="text-sm text-muted-foreground">One-time payment</div>
                 </div>
 

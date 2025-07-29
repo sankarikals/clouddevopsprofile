@@ -12,6 +12,7 @@ const Blog = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   
   const handleAdminLogin = () => {
     // Simple password check - in production, use proper authentication
@@ -74,6 +75,16 @@ const Blog = () => {
 
   const categories = ["All", "Kubernetes", "Career", "Terraform", "CI/CD", "AWS", "Azure"];
 
+  // Filter posts based on selected category
+  const filteredPosts = selectedCategory === "All" 
+    ? blogPosts 
+    : blogPosts.filter(post => post.category === selectedCategory);
+
+  const handleReadMore = (postId: number) => {
+    // In a real app, this would navigate to the full article
+    alert(`Opening article ${postId}. In a real app, this would navigate to the full article page.`);
+  };
+
   return (
     <section id="blog" className="py-20">
       <div className="container mx-auto px-4">
@@ -100,9 +111,10 @@ const Blog = () => {
           {categories.map((category) => (
             <Button
               key={category}
-              variant={category === "All" ? "default" : "outline"}
+              variant={category === selectedCategory ? "default" : "outline"}
               size="sm"
-              className={category === "All" ? "bg-gradient-hero" : ""}
+              className={category === selectedCategory ? "bg-gradient-hero" : ""}
+              onClick={() => setSelectedCategory(category)}
             >
               {category}
             </Button>
@@ -110,7 +122,7 @@ const Blog = () => {
         </div>
 
         {/* Featured post */}
-        {blogPosts.filter(post => post.featured).map((post) => (
+        {filteredPosts.filter(post => post.featured).map((post) => (
           <Card key={post.id} className="mb-12 bg-gradient-card shadow-hero border-0 overflow-hidden">
             <div className="grid lg:grid-cols-2 gap-0">
               <div className="bg-gradient-accent p-8 flex items-center justify-center">
@@ -130,7 +142,7 @@ const Blog = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">{post.title}</h3>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{post.excerpt}</p>
-                <Button className="group">
+                <Button className="group" onClick={() => handleReadMore(post.id)}>
                   Read Article
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -141,7 +153,7 @@ const Blog = () => {
 
         {/* Regular blog posts */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.filter(post => !post.featured).map((post) => (
+          {filteredPosts.filter(post => !post.featured).map((post) => (
             <Card key={post.id} className="bg-gradient-card shadow-card border-0 hover:shadow-hero transition-all duration-300 group">
               <CardHeader>
                 <div className="flex items-center justify-between mb-2">
@@ -160,7 +172,7 @@ const Blog = () => {
                 <CardDescription className="mb-4 leading-relaxed">
                   {post.excerpt}
                 </CardDescription>
-                <Button variant="outline" size="sm" className="group">
+                <Button variant="outline" size="sm" className="group" onClick={() => handleReadMore(post.id)}>
                   Read More
                   <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
                 </Button>
