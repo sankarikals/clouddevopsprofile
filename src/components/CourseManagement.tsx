@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,49 +7,81 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { Plus, Edit2, Trash2, Save, X } from "lucide-react";
 
 interface Course {
-  id: number;
+  id: string;
   title: string;
   description: string;
   duration: string;
   level: string;
-  price: string;
-  originalPrice?: string;
+  price: number;
   features: string[];
-  isPopular: boolean;
+  is_popular: boolean;
   published: boolean;
 }
 
 interface CourseManagementProps {
   isVisible: boolean;
   onClose: () => void;
-  onCoursesUpdate: (courses: Course[]) => void;
-  initialCourses: Course[];
+  onCoursesUpdate: () => void;
 }
 
-const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses }: CourseManagementProps) => {
-  const [courses, setCourses] = useState<Course[]>(initialCourses);
+const CourseManagement = ({ isVisible, onClose, onCoursesUpdate }: CourseManagementProps) => {
+  const [courses, setCourses] = useState<Course[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
-  const [newCourse, setNewCourse] = useState<Course>({
-    id: 0,
+  const [loading, setLoading] = useState(false);
+  const [newCourse, setNewCourse] = useState<{
+    title: string;
+    description: string;
+    duration: string;
+    level: string;
+    price: string;
+    features: string[];
+    is_popular: boolean;
+    published: boolean;
+  }>({
     title: "",
     description: "",
     duration: "",
     level: "",
     price: "",
-    originalPrice: "",
     features: [""],
-    isPopular: false,
+    is_popular: false,
     published: true,
   });
   const { toast } = useToast();
 
+  const loadCourses = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setCourses(data || []);
+    } catch (error) {
+      console.error('Error loading courses:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load courses",
+        variant: "destructive",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isVisible) {
+      loadCourses();
+    }
+  }, [isVisible]);
+
   if (!isVisible) return null;
 
-  const handleSubmitCourse = (e: React.FormEvent) => {
+  const handleSubmitCourse = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!newCourse.title || !newCourse.description || !newCourse.price) {
@@ -61,83 +93,167 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses 
       return;
     }
 
-    const filteredFeatures = newCourse.features.filter(feature => feature.trim() !== "");
-    
-    if (editingCourse) {
-      const updatedCourses = courses.map(course =>
-        course.id === editingCourse.id
-          ? { ...newCourse, features: filteredFeatures }
-          : course
-      );
-      setCourses(updatedCourses);
-      onCoursesUpdate(updatedCourses);
-      setEditingCourse(null);
+    const priceNumber = parseFloat(newCourse.price);
+    if (isNaN(priceNumber) || priceNumber <= 0) {
       toast({
-        title: "Success",
-        description: "Course updated successfully!",
+        title: "Error",
+        description: "Please enter a valid price",
+        variant: "destructive",
       });
-    } else {
-      const newCourseWithId = {
-        ...newCourse,
-        id: Math.max(...courses.map(c => c.id), 0) + 1,
-        features: filteredFeatures,
-      };
-      const updatedCourses = [...courses, newCourseWithId];
-      setCourses(updatedCourses);
-      onCoursesUpdate(updatedCourses);
-      toast({
-        title: "Success",
-        description: "Course added successfully!",
-      });
+      return;
     }
 
-    setNewCourse({
-      id: 0,
-      title: "",
-      description: "",
-      duration: "",
-      level: "",
-      price: "",
-      originalPrice: "",
-      features: [""],
-      isPopular: false,
-      published: true,
-    });
-    setShowAddForm(false);
+    setLoading(true);
+    const filteredFeatures = newCourse.features.filter(feature => feature.trim() !== "");
+    
+    try {
+      if (editingCourse) {
+        const { error } = await supabase
+          .from('courses')
+          .update({
+            title: newCourse.title,
+            description: newCourse.description,
+            duration: newCourse.duration,
+            level: newCourse.level,
+            price: priceNumber,
+            features: filteredFeatures,
+            is_popular: newCourse.is_popular,
+            published: newCourse.published,
+          })
+          .eq('id', editingCourse.id);
+
+        if (error) throw error;
+        setEditingCourse(null);
+        toast({
+          title: "Success",
+          description: "Course updated successfully!",
+        });
+      } else {
+        const { error } = await supabase
+          .from('courses')
+          .insert({
+            title: newCourse.title,
+            description: newCourse.description,
+            duration: newCourse.duration,
+            level: newCourse.level,
+            price: priceNumber,
+            features: filteredFeatures,
+            is_popular: newCourse.is_popular,
+            published: newCourse.published,
+          });
+
+        if (error) throw error;
+        toast({
+          title: "Success",
+          description: "Course added successfully!",
+        });
+      }
+
+      setNewCourse({
+        title: "",
+        description: "",
+        duration: "",
+        level: "",
+        price: "",
+        features: [""],
+        is_popular: false,
+        published: true,
+      });
+      setShowAddForm(false);
+      loadCourses();
+      onCoursesUpdate();
+    } catch (error) {
+      console.error('Error saving course:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save course",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEdit = (course: Course) => {
     setEditingCourse(course);
-    setNewCourse({ ...course });
+    setNewCourse({
+      title: course.title,
+      description: course.description,
+      duration: course.duration,
+      level: course.level,
+      price: course.price.toString(),
+      features: course.features.length > 0 ? course.features : [""],
+      is_popular: course.is_popular,
+      published: course.published,
+    });
     setShowAddForm(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this course?")) {
-      const updatedCourses = courses.filter(course => course.id !== id);
-      setCourses(updatedCourses);
-      onCoursesUpdate(updatedCourses);
+      try {
+        const { error } = await supabase
+          .from('courses')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        
+        toast({
+          title: "Success",
+          description: "Course deleted successfully!",
+        });
+        loadCourses();
+        onCoursesUpdate();
+      } catch (error) {
+        console.error('Error deleting course:', error);
+        toast({
+          title: "Error",
+          description: "Failed to delete course",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const togglePopular = async (id: string, currentValue: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('courses')
+        .update({ is_popular: !currentValue })
+        .eq('id', id);
+
+      if (error) throw error;
+      loadCourses();
+      onCoursesUpdate();
+    } catch (error) {
+      console.error('Error updating course:', error);
       toast({
-        title: "Success",
-        description: "Course deleted successfully!",
+        title: "Error",
+        description: "Failed to update course",
+        variant: "destructive",
       });
     }
   };
 
-  const togglePopular = (id: number) => {
-    const updatedCourses = courses.map(course =>
-      course.id === id ? { ...course, isPopular: !course.isPopular } : course
-    );
-    setCourses(updatedCourses);
-    onCoursesUpdate(updatedCourses);
-  };
+  const togglePublished = async (id: string, currentValue: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('courses')
+        .update({ published: !currentValue })
+        .eq('id', id);
 
-  const togglePublished = (id: number) => {
-    const updatedCourses = courses.map(course =>
-      course.id === id ? { ...course, published: !course.published } : course
-    );
-    setCourses(updatedCourses);
-    onCoursesUpdate(updatedCourses);
+      if (error) throw error;
+      loadCourses();
+      onCoursesUpdate();
+    } catch (error) {
+      console.error('Error updating course:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update course",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleFeatureChange = (index: number, value: string) => {
@@ -214,25 +330,16 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses 
                       />
                     </div>
                     <div>
-                      <Label htmlFor="price">Price *</Label>
+                      <Label htmlFor="price">Price (₹) *</Label>
                       <Input
                         id="price"
+                        type="number"
                         value={newCourse.price}
                         onChange={(e) => setNewCourse({ ...newCourse, price: e.target.value })}
-                        placeholder="e.g., ₹15,000"
+                        placeholder="e.g., 15000"
                         required
                       />
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="originalPrice">Original Price (optional)</Label>
-                    <Input
-                      id="originalPrice"
-                      value={newCourse.originalPrice || ""}
-                      onChange={(e) => setNewCourse({ ...newCourse, originalPrice: e.target.value })}
-                      placeholder="e.g., ₹25,000"
-                    />
                   </div>
 
                   <div>
@@ -284,8 +391,8 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses 
                     <div className="flex items-center space-x-2">
                       <Switch
                         id="popular"
-                        checked={newCourse.isPopular}
-                        onCheckedChange={(checked) => setNewCourse({ ...newCourse, isPopular: checked })}
+                        checked={newCourse.is_popular}
+                        onCheckedChange={(checked) => setNewCourse({ ...newCourse, is_popular: checked })}
                       />
                       <Label htmlFor="popular">Mark as Popular</Label>
                     </div>
@@ -300,9 +407,9 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses 
                   </div>
 
                   <div className="flex gap-2">
-                    <Button type="submit" className="flex items-center gap-2">
+                    <Button type="submit" className="flex items-center gap-2" disabled={loading}>
                       <Save className="h-4 w-4" />
-                      {editingCourse ? "Update Course" : "Add Course"}
+                      {loading ? "Saving..." : (editingCourse ? "Update Course" : "Add Course")}
                     </Button>
                     <Button
                       type="button"
@@ -311,15 +418,13 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses 
                         setShowAddForm(false);
                         setEditingCourse(null);
                         setNewCourse({
-                          id: 0,
                           title: "",
                           description: "",
                           duration: "",
                           level: "",
                           price: "",
-                          originalPrice: "",
                           features: [""],
-                          isPopular: false,
+                          is_popular: false,
                           published: true,
                         });
                       }}
@@ -340,7 +445,7 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses 
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <CardTitle className="text-lg">{course.title}</CardTitle>
-                        {course.isPopular && (
+                        {course.is_popular && (
                           <Badge variant="secondary">Most Popular</Badge>
                         )}
                         <Badge variant={course.published ? "default" : "secondary"}>
@@ -351,7 +456,7 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses 
                       <div className="flex gap-4 text-sm">
                         <span>Duration: {course.duration}</span>
                         <span>Level: {course.level}</span>
-                        <span>Price: {course.price}</span>
+                        <span>Price: ₹{course.price.toLocaleString()}</span>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -365,14 +470,14 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate, initialCourses 
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => togglePopular(course.id)}
-                        className={course.isPopular ? "bg-primary/10" : ""}
+                        onClick={() => togglePopular(course.id, course.is_popular)}
+                        className={course.is_popular ? "bg-primary/10" : ""}
                       >
                         ⭐
                       </Button>
                       <Switch
                         checked={course.published}
-                        onCheckedChange={() => togglePublished(course.id)}
+                        onCheckedChange={() => togglePublished(course.id, course.published)}
                       />
                       <Button
                         variant="destructive"

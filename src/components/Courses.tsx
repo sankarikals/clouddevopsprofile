@@ -1,22 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Clock, Users, Star, CheckCircle, ArrowRight, Settings, Lock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 import CourseManagement from "./CourseManagement";
 
 interface Course {
-  id: number;
+  id: string;
   title: string;
   description: string;
   duration: string;
   level: string;
-  price: string;
-  originalPrice?: string;
+  price: number;
   features: string[];
-  isPopular: boolean;
+  is_popular: boolean;
   published: boolean;
 }
 
@@ -25,65 +26,35 @@ const Courses = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
-  const [courses, setCourses] = useState<Course[]>([
-    {
-      id: 1,
-      title: "Complete DevOps Mastery",
-      description: "Master the complete DevOps lifecycle with hands-on projects and real-world scenarios.",
-      duration: "12 weeks",
-      level: "Beginner to Advanced",
-      price: "₹15,000",
-      originalPrice: "₹25,000",
-      features: [
-        "CI/CD Pipeline Setup",
-        "Docker & Kubernetes",
-        "AWS/Azure Cloud Platforms",
-        "Infrastructure as Code",
-        "Monitoring & Logging",
-        "Security Best Practices",
-        "Live Projects",
-        "Job Assistance"
-      ],
-      isPopular: true,
-      published: true
-    },
-    {
-      id: 2,
-      title: "Cloud Architecture Fundamentals",
-      description: "Learn cloud-native architectures and deployment strategies on major cloud platforms.",
-      duration: "8 weeks",
-      level: "Intermediate",
-      price: "₹12,000",
-      features: [
-        "Multi-cloud Strategy",
-        "Serverless Computing",
-        "Cloud Security",
-        "Cost Optimization",
-        "Migration Strategies",
-        "Hands-on Labs"
-      ],
-      isPopular: false,
-      published: true
-    },
-    {
-      id: 3,
-      title: "Advanced Kubernetes Operations",
-      description: "Deep dive into Kubernetes orchestration, scaling, and enterprise-grade deployments.",
-      duration: "6 weeks",
-      level: "Advanced",
-      price: "₹10,000",
-      features: [
-        "Custom Controllers",
-        "Helm Charts",
-        "Service Mesh",
-        "Advanced Networking",
-        "Troubleshooting",
-        "Production Scenarios"
-      ],
-      isPopular: false,
-      published: true
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  // Load courses from Supabase
+  const loadCourses = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setCourses(data || []);
+    } catch (error) {
+      console.error('Error loading courses:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load courses",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
+
+  useEffect(() => {
+    loadCourses();
+  }, []);
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
@@ -111,12 +82,22 @@ const Courses = () => {
     }
   };
 
-  const handleCoursesUpdate = (updatedCourses: Course[]) => {
-    setCourses(updatedCourses);
+  const handleCoursesUpdate = () => {
+    loadCourses(); // Reload courses from database
   };
 
   // Filter only published courses for display
   const publishedCourses = courses.filter(course => course.published);
+
+  if (loading) {
+    return (
+      <section id="courses" className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="text-lg">Loading courses...</div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="courses" className="py-20">
@@ -146,10 +127,10 @@ const Courses = () => {
             <Card 
               key={course.id} 
               className={`relative bg-gradient-card shadow-card border-0 hover:shadow-hero transition-all duration-300 ${
-                course.isPopular ? 'ring-2 ring-primary' : ''
+                course.is_popular ? 'ring-2 ring-primary' : ''
               }`}
             >
-              {course.isPopular && (
+              {course.is_popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <Badge className="bg-gradient-hero shadow-hero">
                     <Star className="h-3 w-3 mr-1" />
@@ -173,10 +154,7 @@ const Courses = () => {
 
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">{course.price}</div>
-                  {course.originalPrice && (
-                    <div className="text-sm text-muted-foreground line-through">{course.originalPrice}</div>
-                  )}
+                  <div className="text-3xl font-bold text-primary">₹{course.price.toLocaleString()}</div>
                   <div className="text-sm text-muted-foreground">One-time payment</div>
                 </div>
 
@@ -194,11 +172,11 @@ const Courses = () => {
                 <Button 
                   onClick={scrollToContact}
                   className={`w-full group ${
-                    course.isPopular 
+                    course.is_popular 
                       ? 'bg-gradient-hero shadow-hero' 
                       : ''
                   }`}
-                  variant={course.isPopular ? 'default' : 'outline'}
+                  variant={course.is_popular ? 'default' : 'outline'}
                 >
                   Enroll Now
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -207,6 +185,12 @@ const Courses = () => {
             </Card>
           ))}
         </div>
+
+        {publishedCourses.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">No courses available at the moment.</p>
+          </div>
+        )}
 
         <div className="text-center mt-12">
           <p className="text-muted-foreground mb-4">
@@ -225,7 +209,6 @@ const Courses = () => {
           isVisible={showAdminPanel} 
           onClose={() => setShowAdminPanel(false)}
           onCoursesUpdate={handleCoursesUpdate}
-          initialCourses={courses}
         />
         
         <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
