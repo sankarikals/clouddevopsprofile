@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar, ArrowRight, BookOpen, Settings, Lock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import BlogAdmin from "./BlogAdmin";
 
 const Blog = () => {
@@ -13,6 +14,7 @@ const Blog = () => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [blogPosts, setBlogPosts] = useState<any[]>([]);
   
   const handleAdminLogin = () => {
     // Simple password check - in production, use proper authentication
@@ -33,45 +35,50 @@ const Blog = () => {
       setShowAuthDialog(true);
     }
   };
-  // Placeholder blog posts - in a real app, these would come from a CMS or API
-  const blogPosts = [
-    {
-      id: 1,
-      title: "Mastering Kubernetes Security: Best Practices for 2024",
-      excerpt: "A comprehensive guide to securing your Kubernetes clusters with the latest security practices and tools.",
-      date: "2024-01-15",
-      category: "Kubernetes",
-      readTime: "8 min read",
-      featured: true
-    },
-    {
-      id: 2,
-      title: "DevOps Interview Questions: What to Expect and How to Prepare",
-      excerpt: "Essential interview questions and tips to help you ace your next DevOps interview.",
-      date: "2024-01-10",
-      category: "Career",
-      readTime: "12 min read",
-      featured: false
-    },
-    {
-      id: 3,
-      title: "Infrastructure as Code with Terraform: Advanced Patterns",
-      excerpt: "Learn advanced Terraform patterns for managing complex cloud infrastructure at scale.",
-      date: "2024-01-05",
-      category: "Terraform",
-      readTime: "15 min read",
-      featured: false
-    },
-    {
-      id: 4,
-      title: "CI/CD Pipeline Optimization: Speed vs Security Trade-offs",
-      excerpt: "How to balance deployment speed with security in your continuous integration pipelines.",
-      date: "2023-12-28",
-      category: "CI/CD",
-      readTime: "10 min read",
-      featured: false
+
+  // Fetch blog posts from Supabase
+  useEffect(() => {
+    fetchBlogPosts();
+    
+    // Subscribe to real-time updates
+    const channel = supabase
+      .channel('blog_posts_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'blog_posts'
+        },
+        () => {
+          fetchBlogPosts();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const fetchBlogPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching blog posts:', error);
+        return;
+      }
+
+      setBlogPosts(data || []);
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
     }
-  ];
+  };
 
   const categories = ["All", "Kubernetes", "Career", "Terraform", "CI/CD", "AWS", "Azure"];
 
@@ -80,7 +87,7 @@ const Blog = () => {
     ? blogPosts 
     : blogPosts.filter(post => post.category === selectedCategory);
 
-  const handleReadMore = (postId: number) => {
+  const handleReadMore = (postId: string) => {
     window.location.href = `/blog/${postId}`;
   };
 
@@ -133,11 +140,11 @@ const Blog = () => {
               <div className="p-8">
                 <div className="flex items-center gap-4 mb-4">
                   <Badge variant="outline">{post.category}</Badge>
-                  <div className="flex items-center text-muted-foreground text-sm">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    {new Date(post.date).toLocaleDateString()}
-                  </div>
-                  <span className="text-muted-foreground text-sm">{post.readTime}</span>
+                   <div className="flex items-center text-muted-foreground text-sm">
+                     <Calendar className="h-4 w-4 mr-1" />
+                     {new Date(post.date).toLocaleDateString()}
+                   </div>
+                   <span className="text-muted-foreground text-sm">{post.read_time}</span>
                 </div>
                 <h3 className="text-2xl font-bold mb-4">{post.title}</h3>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{post.excerpt}</p>
@@ -155,10 +162,10 @@ const Blog = () => {
           {filteredPosts.filter(post => !post.featured).map((post) => (
             <Card key={post.id} className="bg-gradient-card shadow-card border-0 hover:shadow-hero transition-all duration-300 group">
               <CardHeader>
-                <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline">{post.category}</Badge>
-                  <span className="text-muted-foreground text-sm">{post.readTime}</span>
-                </div>
+                 <div className="flex items-center justify-between mb-2">
+                   <Badge variant="outline">{post.category}</Badge>
+                   <span className="text-muted-foreground text-sm">{post.read_time}</span>
+                 </div>
                 <CardTitle className="text-xl group-hover:text-primary transition-colors">
                   {post.title}
                 </CardTitle>
