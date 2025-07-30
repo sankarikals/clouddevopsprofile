@@ -81,8 +81,7 @@ const Blog = () => {
     : blogPosts.filter(post => post.category === selectedCategory);
 
   const handleReadMore = (postId: number) => {
-    // In a real app, this would navigate to the full article
-    alert(`Opening article ${postId}. In a real app, this would navigate to the full article page.`);
+    window.location.href = `/blog/${postId}`;
   };
 
   return (

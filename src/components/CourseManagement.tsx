@@ -330,13 +330,13 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate }: CourseManagem
                       />
                     </div>
                     <div>
-                      <Label htmlFor="price">Price (₹) *</Label>
+                      <Label htmlFor="price">Price ($) *</Label>
                       <Input
                         id="price"
                         type="number"
                         value={newCourse.price}
                         onChange={(e) => setNewCourse({ ...newCourse, price: e.target.value })}
-                        placeholder="e.g., 15000"
+                        placeholder="e.g., 899"
                         required
                       />
                     </div>
@@ -456,7 +456,7 @@ const CourseManagement = ({ isVisible, onClose, onCoursesUpdate }: CourseManagem
                       <div className="flex gap-4 text-sm">
                         <span>Duration: {course.duration}</span>
                         <span>Level: {course.level}</span>
-                        <span>Price: ₹{course.price.toLocaleString()}</span>
+                        <span>Price: ${course.price.toLocaleString()}</span>
                       </div>
                     </div>
                     <div className="flex gap-2">
