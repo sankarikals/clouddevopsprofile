@@ -12,16 +12,20 @@ import Footer from "@/components/Footer";
 const Index = () => {
   const [showContactForm, setShowContactForm] = useState(false);
 
+  const handleContactOpen = () => setShowContactForm(true);
+
   return (
     <div className="min-h-screen">
-      <Header />
-      <Hero onEnrollClick={() => setShowContactForm(true)} />
+      <Header onContactClick={handleContactOpen} />
+      <Hero onEnrollClick={handleContactOpen} />
       <About />
       <VoiceAssistant />
-      <Courses onEnrollClick={() => setShowContactForm(true)} />
+      <Courses onEnrollClick={handleContactOpen} />
       <Blog />
       <Reviews />
-      {showContactForm && <Contact onClose={() => setShowContactForm(false)} />}
+      <div id="contact">
+        {showContactForm && <Contact onClose={() => setShowContactForm(false)} />}
+      </div>
       <Footer />
     </div>
   );

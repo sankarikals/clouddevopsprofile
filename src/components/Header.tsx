@@ -1,9 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 
-const Header = () => {
+interface HeaderProps {
+  onContactClick?: () => void;
+}
+
+const Header = ({ onContactClick }: HeaderProps) => {
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    if (id === 'contact' && onContactClick) {
+      onContactClick();
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -55,7 +63,7 @@ const Header = () => {
             WhatsApp
           </Button>
           <Button 
-            onClick={() => scrollToSection('contact')}
+            onClick={onContactClick}
             className="bg-gradient-hero shadow-hero"
           >
             Get Started
