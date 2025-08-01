@@ -33,7 +33,7 @@ const About = () => {
                 />
                 
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold mb-2">Senior DevOps Engineer</h3>
+                  <h3 className="text-2xl font-bold mb-2">Cloud and DevOps Architect</h3>
                   <p className="text-muted-foreground mb-6">10+ Years Industry Experience</p>
                   
                   <div className="flex justify-center space-x-4">
@@ -94,14 +94,10 @@ const About = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex justify-center">
               <div className="text-center p-4 bg-card rounded-lg shadow-card">
                 <div className="text-2xl font-bold text-primary">50+</div>
                 <div className="text-sm text-muted-foreground">Students Mentored</div>
-              </div>
-              <div className="text-center p-4 bg-card rounded-lg shadow-card">
-                <div className="text-2xl font-bold text-primary">50+</div>
-                <div className="text-sm text-muted-foreground">Companies Worked With</div>
               </div>
             </div>
           </div>
