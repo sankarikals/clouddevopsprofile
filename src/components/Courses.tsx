@@ -21,7 +21,11 @@ interface Course {
   published: boolean;
 }
 
-const Courses = () => {
+interface CoursesProps {
+  onEnrollClick?: () => void;
+}
+
+const Courses = ({ onEnrollClick }: CoursesProps) => {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
@@ -171,7 +175,7 @@ const Courses = () => {
 
               <CardFooter className="pt-6">
                 <Button 
-                  onClick={scrollToContact}
+                  onClick={onEnrollClick}
                   className={`w-full group ${
                     course.is_popular 
                       ? 'bg-gradient-hero shadow-hero' 
@@ -199,7 +203,7 @@ const Courses = () => {
           </p>
           <Button 
             variant="outline" 
-            onClick={scrollToContact}
+            onClick={onEnrollClick}
             className="bg-gradient-accent"
           >
             Get Personalized Recommendation

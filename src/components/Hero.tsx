@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Award, Users, TrendingUp } from "lucide-react";
 import heroImage from "@/assets/hero-devops.jpg";
 
-const Hero = () => {
+interface HeroProps {
+  onEnrollClick?: () => void;
+}
+
+const Hero = ({ onEnrollClick }: HeroProps) => {
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -49,10 +53,10 @@ const Hero = () => {
             <Button 
               variant="outline" 
               size="lg"
-              onClick={() => scrollToSection('courses')}
+              onClick={onEnrollClick}
               className="text-lg px-8 py-6"
             >
-              Explore Courses
+              Enroll Now
             </Button>
           </div>
 
@@ -63,7 +67,7 @@ const Hero = () => {
                 <Users className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <div className="text-2xl font-bold">500+</div>
+                <div className="text-2xl font-bold">50+</div>
                 <div className="text-muted-foreground">Students Mentored</div>
               </div>
             </div>

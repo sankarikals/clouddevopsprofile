@@ -7,9 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Send, Upload, Lightbulb } from "lucide-react";
+import { MessageCircle, Send, Upload, Lightbulb, X } from "lucide-react";
 
-const Contact = () => {
+interface ContactProps {
+  onClose?: () => void;
+}
+
+const Contact = ({ onClose }: ContactProps) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -83,23 +87,23 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 bg-gradient-accent">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Get Started Today</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Share your background and aspirations. I'll recommend the perfect course for your career goals.
-          </p>
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          <Card className="bg-gradient-card shadow-hero border-0">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Course Recommendation Form</CardTitle>
-              <CardDescription>
-                Fill out your details to get a personalized course recommendation
-              </CardDescription>
-            </CardHeader>
+    <section id="contact" className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <Card className="bg-gradient-card shadow-hero border-0">
+          <CardHeader className="text-center relative">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="absolute right-2 top-2 h-8 w-8 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <CardTitle className="text-2xl">Course Recommendation Form</CardTitle>
+            <CardDescription>
+              Fill out your details to get a personalized course recommendation
+            </CardDescription>
+          </CardHeader>
             
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -249,7 +253,6 @@ const Contact = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
     </section>
   );
 };

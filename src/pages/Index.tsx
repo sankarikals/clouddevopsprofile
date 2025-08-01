@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -9,16 +10,18 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
 const Index = () => {
+  const [showContactForm, setShowContactForm] = useState(false);
+
   return (
     <div className="min-h-screen">
       <Header />
-      <Hero />
+      <Hero onEnrollClick={() => setShowContactForm(true)} />
       <About />
       <VoiceAssistant />
-      <Courses />
+      <Courses onEnrollClick={() => setShowContactForm(true)} />
       <Blog />
       <Reviews />
-      <Contact />
+      {showContactForm && <Contact onClose={() => setShowContactForm(false)} />}
       <Footer />
     </div>
   );
