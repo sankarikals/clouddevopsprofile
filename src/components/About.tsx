@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Github, Linkedin, BookOpen, ExternalLink } from "lucide-react";
-import professionalPortrait from "@/assets/professional-portrait.jpg";
+// Using the uploaded image directly
+const mentorProfile = "/lovable-uploads/c6fd809d-84fa-42cf-b1fb-34918dc8e06e.png";
 
 const About = () => {
   const skills = [
@@ -26,7 +27,7 @@ const About = () => {
             <Card className="bg-gradient-card shadow-card border-0">
               <CardContent className="p-8">
                 <img 
-                  src={professionalPortrait}
+                  src={mentorProfile}
                   alt="Professional Portrait"
                   className="w-48 h-48 rounded-full mx-auto mb-6 object-cover shadow-hero"
                 />
@@ -66,13 +67,13 @@ const About = () => {
             <div>
               <h3 className="text-2xl font-bold mb-4">My Journey</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                With over 10 years of hands-on experience in DevOps and Cloud technologies, I've helped 
-                organizations scale their infrastructure, implement CI/CD pipelines, and migrate to cloud-native 
-                architectures. My passion lies in sharing this knowledge and helping aspiring professionals 
-                break into this exciting field.
+                As a seasoned Cloud Architect and DevOps Engineer with over a decade of experience, I specialize in designing scalable cloud solutions, driving cloud migrations, and implementing cutting-edge automation in Agile environments. I have successfully delivered high-impact cloud and DevOps strategies across industries, helping organizations reduce operational costs, optimize infrastructure, and enhance system reliability.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                I have led multi-cloud migration strategies that improved system performance by 35% while reducing cloud costs by 25%. I have a deep understanding of cloud-native technologies, including AWS, Azure, and Google Cloud, and have successfully architected and deployed complex cloud solutions. My expertise also extends to developing reusable Terraform modules, automating workflows, and improving monitoring systems with tools like CloudWatch, Prometheus, and Grafana.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                I've successfully mentored 500+ students, with a 95% success rate in helping them land 
+                I've successfully mentored 50+ students, with a 95% success rate in helping them land 
                 their dream jobs in top tech companies. My approach combines theoretical knowledge with 
                 real-world project experience, ensuring you're industry-ready from day one.
               </p>
@@ -95,7 +96,7 @@ const About = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-card rounded-lg shadow-card">
-                <div className="text-2xl font-bold text-primary">500+</div>
+                <div className="text-2xl font-bold text-primary">50+</div>
                 <div className="text-sm text-muted-foreground">Students Mentored</div>
               </div>
               <div className="text-center p-4 bg-card rounded-lg shadow-card">
