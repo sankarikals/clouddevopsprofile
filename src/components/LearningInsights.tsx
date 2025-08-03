@@ -26,7 +26,7 @@ const LearningInsights = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const { toast } = useToast();
 
-  const categories = ["All", "AWS", "DevOps", "Kubernetes", "CI/CD", "Security"];
+  const categories = ["All", "AWS", "Azure", "DevOps", "Kubernetes", "CI/CD", "Security", "GenAI"];
 
   useEffect(() => {
     fetchArticles();
@@ -34,14 +34,13 @@ const LearningInsights = () => {
 
   const fetchArticles = async () => {
     try {
-      // Use a raw query since the new table isn't in types yet
       const { data, error } = await supabase
-        .from('blog_posts' as any)
+        .from('external_articles' as any)
         .select('*')
-        .eq('published', true); // Temporary fallback to existing table
+        .order('published_date', { ascending: false });
 
       if (error) throw error;
-      setArticles([]); // Start with empty array until migration completes
+      setArticles((data as unknown as ExternalArticle[]) || []);
     } catch (error) {
       console.error('Error fetching articles:', error);
       toast({
@@ -97,11 +96,23 @@ const LearningInsights = () => {
     <section className="py-16 bg-muted/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Learning Insights</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
-            Stay updated with the latest articles and insights from industry experts on 
-            cloud architecture, DevOps, and modern development practices.
-          </p>
+          <div className="flex justify-between items-start mb-6">
+            <div className="text-center flex-1">
+              <h2 className="text-3xl font-bold mb-4">Learning Insights</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Stay updated with curated articles from industry experts and write your own insights on 
+                cloud architecture, DevOps, and modern development practices.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.location.href = '/admin'}
+              className="hidden md:flex items-center gap-2 mt-2"
+            >
+              Write Article
+            </Button>
+          </div>
           
           <div className="flex flex-wrap justify-center gap-2 mb-6">
             {categories.map((category) => (

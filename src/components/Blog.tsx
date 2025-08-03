@@ -96,9 +96,9 @@ const Blog = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-start mb-16">
           <div className="text-center flex-1">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Learning Insights</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">My Blog</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Stay updated with the latest DevOps trends, tutorials, and industry insights
+              Personal insights and experiences from my DevOps journey
             </p>
           </div>
           <Button
