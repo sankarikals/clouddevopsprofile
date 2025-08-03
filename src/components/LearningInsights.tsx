@@ -34,11 +34,14 @@ const LearningInsights = () => {
 
   const fetchArticles = async () => {
     try {
+      // Use a raw query since the new table isn't in types yet
       const { data, error } = await supabase
-        .rpc('get_external_articles');
+        .from('blog_posts' as any)
+        .select('*')
+        .eq('published', true); // Temporary fallback to existing table
 
       if (error) throw error;
-      setArticles(data as ExternalArticle[] || []);
+      setArticles([]); // Start with empty array until migration completes
     } catch (error) {
       console.error('Error fetching articles:', error);
       toast({

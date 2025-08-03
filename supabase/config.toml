@@ -1,1 +1,10 @@
 project_id = "crlrmhvvrnbmkezdtemu"
+
+[auth]
+enabled = true
+email_double_confirm_changes = true
+email_enable_signup = true
+email_enable_confirmations = false
+
+[functions.fetch-articles]
+verify_jwt = false
