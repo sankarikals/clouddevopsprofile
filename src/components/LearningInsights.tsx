@@ -93,7 +93,7 @@ const LearningInsights = () => {
   }
 
   return (
-    <section className="py-16 bg-muted/50">
+    <section id="learning-insights" className="py-16 bg-muted/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <div className="flex justify-between items-start mb-6">

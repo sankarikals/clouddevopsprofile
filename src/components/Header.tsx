@@ -33,7 +33,7 @@ const Header = ({ onContactClick }: HeaderProps) => {
             Courses
           </button>
           <button 
-            onClick={() => scrollToSection('blog')}
+            onClick={() => scrollToSection('learning-insights')}
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             Blog

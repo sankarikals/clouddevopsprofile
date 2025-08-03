@@ -4,7 +4,6 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import VoiceAssistant from "@/components/VoiceAssistant";
 import Courses from "@/components/Courses";
-import Blog from "@/components/Blog";
 import LearningInsights from "@/components/LearningInsights";
 import Reviews from "@/components/Reviews";
 import Contact from "@/components/Contact";
@@ -22,7 +21,6 @@ const Index = () => {
       <About />
       <VoiceAssistant />
       <Courses onEnrollClick={handleContactOpen} />
-      <Blog />
       <LearningInsights />
       <Reviews />
       <div id="contact">
