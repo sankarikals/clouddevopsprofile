@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BlogManagement from "@/components/BlogManagement";
+import ProjectManagement from "@/components/ProjectManagement";
 import Reviews from "@/components/Reviews";
 import { ArrowLeft } from "lucide-react";
 
@@ -23,13 +24,18 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="blogs" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="blogs">Blog Management</TabsTrigger>
+            <TabsTrigger value="projects">Project Management</TabsTrigger>
             <TabsTrigger value="reviews">Review Management</TabsTrigger>
           </TabsList>
           
           <TabsContent value="blogs">
             <BlogManagement />
+          </TabsContent>
+          
+          <TabsContent value="projects">
+            <ProjectManagement />
           </TabsContent>
           
           <TabsContent value="reviews">
