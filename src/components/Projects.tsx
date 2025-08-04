@@ -31,7 +31,7 @@ const Projects = ({ onEnrollClick }: ProjectsProps) => {
 
   const fetchProjects = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('projects')
         .select('*')
         .eq('published', true)
@@ -39,7 +39,7 @@ const Projects = ({ onEnrollClick }: ProjectsProps) => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setProjects(data || []);
+      setProjects((data as any[]) || []);
     } catch (error) {
       console.error('Error fetching projects:', error);
       toast({
