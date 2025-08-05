@@ -50,29 +50,63 @@ const Contact = ({ onClose }: ContactProps) => {
     setRecommendedCourses(recommendations);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData);
-    
-    toast({
-      title: "Query Submitted Successfully!",
-      description: "I'll get back to you within 24 hours with a personalized course recommendation.",
-    });
+    try {
+      // Send query notification
+      const response = await fetch(
+        "https://crlrmhvvrnbmkezdtemu.supabase.co/functions/v1/send-query-notification",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            experience: formData.experience,
+            aspirations: formData.aspirations,
+            message: formData.message,
+            phone: formData.phone,
+            linkedin: formData.linkedinProfile,
+            recommendedCourses,
+          }),
+        }
+      );
 
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      currentField: "",
-      experience: "",
-      aspirations: "",
-      linkedinProfile: "",
-      phone: "",
-      message: ""
-    });
-    setRecommendedCourses([]);
+      const result = await response.json();
+
+      if (result.success) {
+        // Show success popup
+        toast({
+          title: "🎉 Query Registered Successfully!",
+          description: "Thank you! We've sent a confirmation email and our team will reach out within 24 hours.",
+        });
+        
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          currentField: "",
+          experience: "",
+          aspirations: "",
+          linkedinProfile: "",
+          phone: "",
+          message: ""
+        });
+        setRecommendedCourses([]);
+      } else {
+        throw new Error(result.error || "Failed to submit query");
+      }
+    } catch (error) {
+      console.error("Error submitting query:", error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your query. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleWhatsAppContact = () => {
