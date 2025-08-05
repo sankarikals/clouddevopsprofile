@@ -98,12 +98,119 @@ export type Database = {
         }
         Relationships: []
       }
+      external_articles: {
+        Row: {
+          author: string
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          id: string
+          image_url: string | null
+          is_featured: boolean
+          published_date: string
+          read_time: string | null
+          source_platform: string
+          source_url: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          category: string
+          content: string
+          created_at?: string
+          excerpt: string
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          published_date: string
+          read_time?: string | null
+          source_platform: string
+          source_url: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          published_date?: string
+          read_time?: string | null
+          source_platform?: string
+          source_url?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string
+          github_url: string
+          id: string
+          image_url: string | null
+          is_featured: boolean
+          published: boolean
+          skills: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          github_url: string
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          published?: boolean
+          skills?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          github_url?: string
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          published?: boolean
+          skills?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_external_articles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          title: string
+          excerpt: string
+          author: string
+          source_url: string
+          source_platform: string
+          category: string
+          published_date: string
+          read_time: string
+          is_featured: boolean
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
