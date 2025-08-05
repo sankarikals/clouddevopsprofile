@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Clock, ExternalLink, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -24,6 +25,8 @@ const LearningInsights = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const articlesPerPage = 6; // Show 6 articles per page (2 rows of 3)
   const { toast } = useToast();
 
   const categories = ["All", "AWS", "Azure", "DevOps", "Kubernetes", "CI/CD", "Security", "GenAI"];
@@ -81,6 +84,25 @@ const LearningInsights = () => {
   const filteredArticles = selectedCategory === "All" 
     ? articles 
     : articles.filter(article => article.category === selectedCategory);
+
+  // Reset to first page when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+  const startIndex = (currentPage - 1) * articlesPerPage;
+  const endIndex = startIndex + articlesPerPage;
+  const currentArticles = filteredArticles.slice(startIndex, endIndex);
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  };
 
   if (loading) {
     return (
@@ -147,55 +169,93 @@ const LearningInsights = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredArticles.map((article) => (
-              <Card key={article.id} className="h-full flex flex-col hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {article.category}
-                    </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      {article.source_platform}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-lg line-clamp-2">
-                    {article.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 flex flex-col">
-                  <p className="text-muted-foreground text-sm mb-4 flex-1 line-clamp-3">
-                    {article.excerpt}
-                  </p>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>By {article.author}</span>
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-3 w-3" />
-                        <span>{article.read_time}</span>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {currentArticles.map((article) => (
+                <Card key={article.id} className="h-full flex flex-col hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {article.category}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        {article.source_platform}
+                      </Badge>
+                    </div>
+                    <CardTitle className="text-lg line-clamp-2">
+                      {article.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <p className="text-muted-foreground text-sm mb-4 flex-1 line-clamp-3">
+                      {article.excerpt}
+                    </p>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>By {article.author}</span>
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-3 w-3" />
+                          <span>{article.read_time}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(article.published_date).toLocaleDateString()}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => window.open(article.source_url, '_blank')}
+                          className="flex items-center gap-2"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                          Read Article
+                        </Button>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(article.published_date).toLocaleDateString()}
-                      </span>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => window.open(article.source_url, '_blank')}
-                        className="flex items-center gap-2"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        Read Article
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    ({filteredArticles.length} articles)
+                  </span>
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center gap-2"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>
