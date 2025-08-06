@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Settings } from "lucide-react";
 
 interface HeaderProps {
   onContactClick?: () => void;
@@ -59,6 +59,15 @@ const Header = ({ onContactClick }: HeaderProps) => {
         </nav>
 
         <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => window.location.href = '/admin'}
+            className="hidden lg:flex items-center gap-2 text-muted-foreground hover:text-primary"
+          >
+            <Settings className="h-4 w-4" />
+            Admin
+          </Button>
           <Button 
             variant="outline" 
             size="sm"

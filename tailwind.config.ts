@@ -66,11 +66,16 @@ export default {
 			backgroundImage: {
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-card': 'var(--gradient-card)',
-				'gradient-accent': 'var(--gradient-accent)'
+				'gradient-accent': 'var(--gradient-accent)',
+				'gradient-tech': 'var(--gradient-tech)'
 			},
 			boxShadow: {
 				'card': 'var(--shadow-card)',
-				'hero': 'var(--shadow-hero)'
+				'hero': 'var(--shadow-hero)',
+				'tech': 'var(--shadow-tech)'
+			},
+			fontFamily: {
+				'mono': ['JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', 'monospace'],
 			},
 			transitionTimingFunction: {
 				'smooth': 'var(--transition-smooth)'

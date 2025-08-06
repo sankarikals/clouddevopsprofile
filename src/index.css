@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 195 100% 39%;
+    --primary: 220 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 10% 64%;
 
-    --accent: 195 100% 39%;
+    --accent: 212 100% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -36,14 +36,16 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 195 100% 39%;
 
-    /* Professional gradients for hero and sections */
-    --gradient-hero: linear-gradient(135deg, hsl(195 100% 39%), hsl(220 100% 45%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
-    --gradient-accent: linear-gradient(135deg, hsl(195 100% 39% / 0.1), hsl(220 100% 45% / 0.1));
+    /* Tech-focused gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(220 100% 50%), hsl(212 100% 45%), hsl(240 100% 40%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(215 28% 97%));
+    --gradient-accent: linear-gradient(135deg, hsl(220 100% 50% / 0.05), hsl(212 100% 45% / 0.1));
+    --gradient-tech: linear-gradient(90deg, hsl(220 100% 50%), hsl(212 100% 45%));
     
-    /* Professional shadows */
-    --shadow-card: 0 4px 6px -1px hsl(195 100% 39% / 0.1), 0 2px 4px -1px hsl(195 100% 39% / 0.06);
-    --shadow-hero: 0 25px 50px -12px hsl(195 100% 39% / 0.25);
+    /* Enhanced shadows for depth */
+    --shadow-card: 0 8px 32px -4px hsl(220 100% 50% / 0.15), 0 2px 8px -2px hsl(220 100% 50% / 0.1);
+    --shadow-hero: 0 32px 64px -12px hsl(220 100% 50% / 0.4);
+    --shadow-tech: 0 0 20px hsl(220 100% 50% / 0.3);
     
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
