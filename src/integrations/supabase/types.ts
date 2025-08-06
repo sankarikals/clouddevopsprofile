@@ -108,6 +108,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_featured: boolean
+          language: string
           published_date: string
           read_time: string | null
           source_platform: string
@@ -125,6 +126,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_featured?: boolean
+          language?: string
           published_date: string
           read_time?: string | null
           source_platform: string
@@ -142,6 +144,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_featured?: boolean
+          language?: string
           published_date?: string
           read_time?: string | null
           source_platform?: string

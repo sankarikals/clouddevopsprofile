@@ -40,6 +40,7 @@ const LearningInsights = () => {
       const { data, error } = await supabase
         .from('external_articles' as any)
         .select('*')
+        .eq('language', 'en')
         .order('published_date', { ascending: false });
 
       if (error) throw error;
