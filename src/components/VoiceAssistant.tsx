@@ -9,6 +9,16 @@ interface CourseRecommendation {
   course: string;
   reason: string;
   priority: number;
+  matchScore: number;
+}
+
+interface UserProfile {
+  experience: number;
+  role: string;
+  skills: string[];
+  goals: string[];
+  previousRecommendations: string[];
+  conversationHistory: string[];
 }
 
 const VoiceAssistant = () => {
@@ -20,6 +30,14 @@ const VoiceAssistant = () => {
   const [response, setResponse] = useState("");
   const recognitionRef = useRef<any>(null);
   const [elevenLabsApiKey, setElevenLabsApiKey] = useState("");
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    experience: 0,
+    role: "",
+    skills: [],
+    goals: [],
+    previousRecommendations: [],
+    conversationHistory: []
+  });
 
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -63,80 +81,228 @@ const VoiceAssistant = () => {
 
   const analyzeUserProfile = (input: string): CourseRecommendation[] => {
     const lowerInput = input.toLowerCase();
-    const recommendations: CourseRecommendation[] = [];
-
-    // Extract experience level
-    const experienceMatch = lowerInput.match(/(\d+)\s*(year|yr)/);
-    const experience = experienceMatch ? parseInt(experienceMatch[1]) : 0;
-
-    // Check current role/field
-    const isJavaDeveloper = lowerInput.includes('java') && lowerInput.includes('developer');
-    const isPythonDeveloper = lowerInput.includes('python') && lowerInput.includes('developer');
-    const isSysAdmin = lowerInput.includes('system admin') || lowerInput.includes('sysadmin');
-    const isNewbie = lowerInput.includes('fresher') || lowerInput.includes('beginner') || experience === 0;
     
-    // Check goals
-    const wantsDevOps = lowerInput.includes('devops') || lowerInput.includes('dev ops');
-    const wantsCloud = lowerInput.includes('cloud') || lowerInput.includes('aws') || lowerInput.includes('azure');
-    const wantsInterview = lowerInput.includes('interview') || lowerInput.includes('job');
-
-    // Generate recommendations based on analysis
-    if (experience >= 3 && (isJavaDeveloper || isPythonDeveloper) && (wantsDevOps || wantsCloud)) {
-      recommendations.push({
-        course: "Real-Time DevOps Projects",
-        reason: "Perfect for experienced developers transitioning to DevOps with hands-on projects",
-        priority: 1
-      });
-      recommendations.push({
-        course: "Interview Mastery Program",
-        reason: "Leverage your development experience for DevOps interviews",
-        priority: 2
-      });
-    } else if (experience >= 5 && wantsInterview) {
-      recommendations.push({
-        course: "Interview Mastery Program",
-        reason: "Fast-track your DevOps career transition with targeted interview preparation",
-        priority: 1
-      });
-    } else if (experience < 3 || isNewbie) {
-      recommendations.push({
-        course: "Complete DevOps Mastery",
-        reason: "Comprehensive foundation for DevOps beginners",
-        priority: 1
-      });
-      recommendations.push({
-        course: "Real-Time DevOps Projects",
-        reason: "Build practical skills with real-world projects",
-        priority: 2
-      });
-    } else if (isSysAdmin && (wantsDevOps || wantsCloud)) {
-      recommendations.push({
-        course: "Real-Time DevOps Projects",
-        reason: "Transition from traditional admin to modern DevOps practices",
-        priority: 1
-      });
+    // Update conversation history
+    const updatedProfile = { ...userProfile };
+    updatedProfile.conversationHistory.push(input);
+    
+    // Advanced analysis with multiple factors
+    const analysis = {
+      experience: extractExperience(lowerInput),
+      technologies: extractTechnologies(lowerInput),
+      role: extractRole(lowerInput),
+      goals: extractGoals(lowerInput),
+      urgency: extractUrgency(lowerInput),
+      currentLevel: assessCurrentLevel(lowerInput)
+    };
+    
+    // Update user profile
+    updatedProfile.experience = Math.max(updatedProfile.experience, analysis.experience);
+    updatedProfile.skills = [...new Set([...updatedProfile.skills, ...analysis.technologies])];
+    updatedProfile.goals = [...new Set([...updatedProfile.goals, ...analysis.goals])];
+    if (analysis.role) updatedProfile.role = analysis.role;
+    
+    setUserProfile(updatedProfile);
+    
+    // Generate intelligent recommendations
+    const courses = [
+      {
+        name: "Complete DevOps Mastery",
+        targetExp: [0, 1, 2],
+        technologies: ["basics", "fundamentals", "beginner"],
+        goals: ["learn", "start", "begin", "foundation"],
+        description: "Comprehensive foundation covering CI/CD, containerization, and cloud basics"
+      },
+      {
+        name: "Real-Time DevOps Projects",
+        targetExp: [1, 2, 3, 4, 5],
+        technologies: ["docker", "kubernetes", "jenkins", "aws", "terraform"],
+        goals: ["practice", "hands-on", "project", "experience"],
+        description: "Industry-standard projects with real deployment scenarios"
+      },
+      {
+        name: "Interview Mastery Program",
+        targetExp: [2, 3, 4, 5, 6, 7, 8],
+        technologies: ["interview", "job", "career"],
+        goals: ["job", "interview", "career", "switch", "transition"],
+        description: "Targeted preparation for DevOps and Cloud engineering interviews"
+      },
+      {
+        name: "Advanced Cloud Architecture",
+        targetExp: [3, 4, 5, 6, 7, 8],
+        technologies: ["aws", "azure", "gcp", "cloud", "architecture"],
+        goals: ["cloud", "architect", "scale", "enterprise"],
+        description: "Design scalable cloud solutions and advanced DevOps patterns"
+      },
+      {
+        name: "Kubernetes Mastery Bootcamp",
+        targetExp: [2, 3, 4, 5],
+        technologies: ["kubernetes", "k8s", "container", "orchestration"],
+        goals: ["kubernetes", "container", "orchestration", "microservices"],
+        description: "Deep dive into Kubernetes orchestration and container management"
+      }
+    ];
+    
+    const recommendations: CourseRecommendation[] = [];
+    
+    for (const course of courses) {
+      let matchScore = 0;
+      
+      // Experience match
+      if (course.targetExp.includes(analysis.experience)) matchScore += 30;
+      else if (Math.abs(course.targetExp[0] - analysis.experience) <= 1) matchScore += 15;
+      
+      // Technology match
+      const techMatches = course.technologies.filter(tech => 
+        analysis.technologies.includes(tech) || lowerInput.includes(tech)
+      ).length;
+      matchScore += techMatches * 20;
+      
+      // Goal match
+      const goalMatches = course.goals.filter(goal => 
+        analysis.goals.includes(goal) || lowerInput.includes(goal)
+      ).length;
+      matchScore += goalMatches * 25;
+      
+      // Avoid repetition - reduce score for previously recommended courses
+      if (updatedProfile.previousRecommendations.includes(course.name)) {
+        matchScore -= 40;
+      }
+      
+      // Urgency bonus
+      if (analysis.urgency > 0) {
+        if (course.name.includes("Interview")) matchScore += 20;
+      }
+      
+      if (matchScore > 20) {
+        recommendations.push({
+          course: course.name,
+          reason: course.description,
+          priority: Math.ceil((100 - matchScore) / 20),
+          matchScore
+        });
+      }
     }
-
-    return recommendations.sort((a, b) => a.priority - b.priority);
+    
+    // Sort by match score and limit to top 3
+    const sortedRecs = recommendations
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, 3);
+    
+    // Update previous recommendations
+    updatedProfile.previousRecommendations.push(...sortedRecs.map(r => r.course));
+    setUserProfile(updatedProfile);
+    
+    return sortedRecs;
+  };
+  
+  const extractExperience = (input: string): number => {
+    const experienceMatch = input.match(/(\d+)\s*(year|yr|experience)/i);
+    if (experienceMatch) return parseInt(experienceMatch[1]);
+    
+    if (input.includes('fresher') || input.includes('beginner') || input.includes('new')) return 0;
+    if (input.includes('senior') || input.includes('lead')) return 5;
+    if (input.includes('junior')) return 1;
+    
+    return userProfile.experience;
+  };
+  
+  const extractTechnologies = (input: string): string[] => {
+    const techKeywords = [
+      'java', 'python', 'javascript', 'react', 'node', 'spring',
+      'docker', 'kubernetes', 'jenkins', 'git', 'aws', 'azure', 'gcp',
+      'terraform', 'ansible', 'linux', 'mysql', 'mongodb', 'redis'
+    ];
+    
+    return techKeywords.filter(tech => input.includes(tech));
+  };
+  
+  const extractRole = (input: string): string => {
+    const roles = [
+      'developer', 'engineer', 'programmer', 'architect', 'admin', 'analyst',
+      'manager', 'lead', 'senior', 'junior', 'fresher'
+    ];
+    
+    for (const role of roles) {
+      if (input.includes(role)) return role;
+    }
+    
+    return userProfile.role;
+  };
+  
+  const extractGoals = (input: string): string[] => {
+    const goalKeywords = [
+      'learn', 'switch', 'transition', 'job', 'interview', 'career',
+      'devops', 'cloud', 'practice', 'project', 'skill', 'certification'
+    ];
+    
+    return goalKeywords.filter(goal => input.includes(goal));
+  };
+  
+  const extractUrgency = (input: string): number => {
+    if (input.includes('urgent') || input.includes('asap') || input.includes('quickly')) return 3;
+    if (input.includes('soon') || input.includes('fast')) return 2;
+    if (input.includes('eventually') || input.includes('future')) return 1;
+    return 0;
+  };
+  
+  const assessCurrentLevel = (input: string): string => {
+    if (input.includes('expert') || input.includes('advanced')) return 'advanced';
+    if (input.includes('intermediate') || input.includes('some experience')) return 'intermediate';
+    return 'beginner';
   };
 
   const generateVoiceResponse = (userInput: string, recommendations: CourseRecommendation[]): string => {
-    const lowerInput = userInput.toLowerCase();
-    let response = "Based on your profile, ";
-
-    if (recommendations.length > 0) {
-      const topRecommendation = recommendations[0];
-      response += `I highly recommend the ${topRecommendation.course}. ${topRecommendation.reason}.`;
-      
-      if (recommendations.length > 1) {
-        response += ` You might also consider the ${recommendations[1].course} as a follow-up.`;
-      }
-      
-      response += " Would you like me to provide more details about these courses or help you get started with enrollment?";
-    } else {
-      response += "I'd love to help you choose the right course. Could you tell me more about your current role, experience level, and career goals?";
+    const conversationCount = userProfile.conversationHistory.length;
+    
+    // Personalized greeting based on conversation history
+    let greeting = "";
+    if (conversationCount === 1) {
+      greeting = `Hello! Thanks for sharing your background. `;
+    } else if (conversationCount > 1) {
+      greeting = `I see you're looking for more specific guidance. `;
     }
-
+    
+    if (recommendations.length === 0) {
+      return `${greeting}I'd love to help you find the perfect DevOps learning path. Could you tell me more about your current role, years of experience, and what specific goals you're trying to achieve?`;
+    }
+    
+    const topRec = recommendations[0];
+    const hasMultiple = recommendations.length > 1;
+    
+    // Dynamic response based on match quality and context
+    let response = greeting;
+    
+    if (topRec.matchScore >= 80) {
+      response += `Based on your profile, you're an excellent fit for the ${topRec.course}. `;
+    } else if (topRec.matchScore >= 60) {
+      response += `I believe the ${topRec.course} would be a great choice for you. `;
+    } else {
+      response += `Considering your background, I'd suggest starting with the ${topRec.course}. `;
+    }
+    
+    response += `${topRec.reason}. `;
+    
+    if (hasMultiple) {
+      const secondRec = recommendations[1];
+      if (topRec.matchScore - secondRec.matchScore < 20) {
+        response += `Alternatively, the ${secondRec.course} could also be valuable for your goals. `;
+      } else {
+        response += `For your next step, consider the ${secondRec.course}. `;
+      }
+    }
+    
+    // Contextual follow-up questions
+    if (userProfile.goals.includes('job') || userProfile.goals.includes('interview')) {
+      response += "Are you currently interviewing or preparing for a career transition? ";
+    } else if (userProfile.experience === 0) {
+      response += "Do you have any prior experience with tools like Git, Linux, or cloud platforms? ";
+    } else if (userProfile.skills.includes('docker') || userProfile.skills.includes('kubernetes')) {
+      response += "How comfortable are you with containerization and orchestration? ";
+    }
+    
+    response += "Would you like me to explain more about any of these recommendations?";
+    
     return response;
   };
 
@@ -211,8 +377,6 @@ const VoiceAssistant = () => {
   const startListening = () => {
     if (recognitionRef.current) {
       setTranscript("");
-      setRecommendations([]);
-      setResponse("");
       setIsListening(true);
       recognitionRef.current.start();
     } else {
@@ -222,6 +386,24 @@ const VoiceAssistant = () => {
         variant: "destructive"
       });
     }
+  };
+  
+  const resetConversation = () => {
+    setUserProfile({
+      experience: 0,
+      role: "",
+      skills: [],
+      goals: [],
+      previousRecommendations: [],
+      conversationHistory: []
+    });
+    setRecommendations([]);
+    setResponse("");
+    setTranscript("");
+    toast({
+      title: "Conversation Reset",
+      description: "Starting fresh conversation with improved AI analysis.",
+    });
   };
 
   const stopListening = () => {
@@ -326,12 +508,17 @@ const VoiceAssistant = () => {
                     <h4 className="font-semibold text-primary">AI Course Recommendations</h4>
                   </div>
                   <div className="space-y-3">
-                    {recommendations.map((rec, index) => (
+                     {recommendations.map((rec, index) => (
                       <div key={index} className="p-4 bg-gradient-accent rounded-lg border border-primary/20">
                         <div className="flex items-start justify-between mb-2">
-                          <Badge className="bg-primary/10 text-primary">
-                            Priority {rec.priority}
-                          </Badge>
+                          <div className="flex gap-2">
+                            <Badge className="bg-primary/10 text-primary">
+                              Priority {rec.priority}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {rec.matchScore}% match
+                            </Badge>
+                          </div>
                         </div>
                         <h5 className="font-semibold text-lg mb-2">{rec.course}</h5>
                         <p className="text-sm text-muted-foreground">{rec.reason}</p>
@@ -351,7 +538,7 @@ const VoiceAssistant = () => {
                 </div>
               )}
 
-              <div className="text-center">
+              <div className="flex justify-center gap-4">
                 <Button 
                   variant="outline" 
                   onClick={() => scrollToSection('contact')}
@@ -359,6 +546,15 @@ const VoiceAssistant = () => {
                 >
                   Get Personalized Consultation
                 </Button>
+                {userProfile.conversationHistory.length > 0 && (
+                  <Button 
+                    variant="outline" 
+                    onClick={resetConversation}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    Start New Conversation
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
