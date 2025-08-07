@@ -20,6 +20,10 @@ const About = () => {
     "Ansible", "Prometheus", "Grafana", "ELK Stack", "Istio"
   ];
 
+  const aiSkills = [
+    "GenAI/LLMs", "Agentic AI", "ML Ops", "AI Automation", "LangChain", "Vector DBs"
+  ];
+
   const programmingSkills = [
     "Python", "Go", "Bash", "PowerShell", "YAML", "JSON", "HCL"
   ];
@@ -50,8 +54,9 @@ const About = () => {
             Your Technical Mentor
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            A battle-tested Cloud Architect and DevOps specialist with 10+ years building enterprise-scale 
-            infrastructure, automating complex workflows, and mentoring the next generation of engineers
+            Expert Cloud Architect & AI Engineering Leader with 10+ years architecting enterprise-scale 
+            infrastructure, pioneering GenAI/Agentic AI solutions, and transforming businesses through 
+            intelligent automation and cloud-native architectures
           </p>
         </div>
 
@@ -133,19 +138,19 @@ const About = () => {
                 </h3>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    As a <strong className="text-foreground">Senior Cloud Architect</strong> with 10+ years of enterprise experience, 
-                    I've architected and deployed mission-critical infrastructure serving millions of users. My expertise spans 
-                    multi-cloud environments, container orchestration, and enterprise-grade DevOps automation.
+                    As a <strong className="text-foreground">Senior Cloud Architect & AI Engineering Leader</strong> with 10+ years of enterprise experience, 
+                    I've architected mission-critical infrastructure serving millions of users while pioneering GenAI and Agentic AI solutions. 
+                    My expertise spans multi-cloud environments, AI/ML operations, and intelligent automation systems.
                   </p>
                   <p>
-                    <strong className="text-foreground">Key Achievements:</strong> Led cloud migration strategies improving system 
-                    performance by 35% while reducing infrastructure costs by 25%. Designed scalable Kubernetes clusters handling 
-                    100K+ concurrent users. Built automated CI/CD pipelines reducing deployment time from hours to minutes.
+                    <strong className="text-foreground">AI & Cloud Innovations:</strong> Designed enterprise GenAI platforms processing 1M+ AI requests daily. 
+                    Built intelligent automation systems using Agentic AI reducing manual workflows by 60%. Led cloud migration strategies 
+                    improving system performance by 35% while integrating AI-driven optimization reducing infrastructure costs by 25%.
                   </p>
                   <p>
-                    <strong className="text-foreground">Mentorship Impact:</strong> Successfully guided 50+ engineers into senior 
-                    DevOps and Cloud roles at companies like Amazon, Microsoft, and Google. My hands-on approach combines 
-                    real-world project experience with industry best practices.
+                    <strong className="text-foreground">Mentorship Excellence:</strong> Successfully guided 50+ engineers into senior 
+                    DevOps, Cloud, and AI roles at companies like Amazon, Microsoft, and Google. My hands-on approach combines 
+                    cutting-edge AI technologies with proven cloud architecture patterns and industry best practices.
                   </p>
                 </div>
               </CardContent>
@@ -153,6 +158,26 @@ const About = () => {
 
             {/* Technical Skills Grid */}
             <div className="grid md:grid-cols-2 gap-4">
+              <Card className="bg-gradient-card shadow-card border border-primary/10">
+                <CardContent className="p-4">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-primary" />
+                    AI & Machine Learning
+                  </h4>
+                  <div className="flex flex-wrap gap-1">
+                    {aiSkills.map((skill) => (
+                      <Badge 
+                        key={skill} 
+                        variant="secondary" 
+                        className="text-xs bg-accent/20 text-accent hover:bg-accent/30"
+                      >
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card className="bg-gradient-card shadow-card border border-primary/10">
                 <CardContent className="p-4">
                   <h4 className="font-semibold mb-3 flex items-center gap-2">
@@ -164,7 +189,7 @@ const About = () => {
                       <Badge 
                         key={tool} 
                         variant="secondary" 
-                        className="text-xs bg-primary/10 text-primary hover:bg-primary/20"
+                        className="text-xs bg-primary/20 text-foreground hover:bg-primary/30"
                       >
                         {tool}
                       </Badge>
@@ -172,27 +197,28 @@ const About = () => {
                   </div>
                 </CardContent>
               </Card>
-
-              <Card className="bg-gradient-card shadow-card border border-primary/10">
-                <CardContent className="p-4">
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Code className="h-4 w-4 text-primary" />
-                    Programming & Scripting
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
-                    {programmingSkills.map((skill) => (
-                      <Badge 
-                        key={skill} 
-                        variant="secondary" 
-                        className="text-xs bg-primary/10 text-primary hover:bg-primary/20 font-mono"
-                      >
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
             </div>
+
+            {/* Programming Skills */}
+            <Card className="bg-gradient-card shadow-card border border-primary/10">
+              <CardContent className="p-4">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Code className="h-4 w-4 text-primary" />
+                  Programming & Scripting
+                </h4>
+                <div className="flex flex-wrap gap-1">
+                  {programmingSkills.map((skill) => (
+                    <Badge 
+                      key={skill} 
+                      variant="secondary" 
+                      className="text-xs bg-secondary/50 text-foreground hover:bg-secondary/70 font-mono"
+                    >
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Achievement Stats */}
             <div className="grid grid-cols-3 gap-4">
@@ -207,18 +233,6 @@ const About = () => {
               ))}
             </div>
 
-            {/* Admin Access Note */}
-            <Card className="bg-primary/5 border border-primary/20">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 text-primary">
-                  <Shield className="h-4 w-4" />
-                  <span className="font-semibold">Project Management</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Access the admin panel at <code className="bg-primary/10 px-1 rounded">/admin</code> to manage projects, courses, and content.
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
