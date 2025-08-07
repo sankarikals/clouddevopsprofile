@@ -21,7 +21,7 @@ const About = () => {
   ];
 
   const aiSkills = [
-    "GenAI/LLMs", "Agentic AI", "ML Ops", "AI Automation", "LangChain", "Vector DBs"
+    "GenAI/LLMs", "Agentic AI", "ML Ops", "AI Automation"
   ];
 
   const programmingSkills = [

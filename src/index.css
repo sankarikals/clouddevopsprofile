@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 220 100% 50%;
+    --primary: 200 25% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 33% 17%;
+    --secondary: 200 15% 22%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 28% 17%;
-    --muted-foreground: 217 10% 64%;
+    --muted: 200 10% 20%;
+    --muted-foreground: 200 8% 60%;
 
-    --accent: 212 100% 45%;
+    --accent: 180 25% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,18 +34,18 @@ All colors MUST be HSL.
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 195 100% 39%;
+    --ring: 200 25% 55%;
 
     /* Tech-focused gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(220 100% 50%), hsl(212 100% 45%), hsl(240 100% 40%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(215 28% 97%));
-    --gradient-accent: linear-gradient(135deg, hsl(220 100% 50% / 0.05), hsl(212 100% 45% / 0.1));
-    --gradient-tech: linear-gradient(90deg, hsl(220 100% 50%), hsl(212 100% 45%));
+    --gradient-hero: linear-gradient(135deg, hsl(200 25% 55%), hsl(180 25% 45%), hsl(200 30% 40%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(200 15% 97%));
+    --gradient-accent: linear-gradient(135deg, hsl(200 25% 55% / 0.05), hsl(180 25% 45% / 0.1));
+    --gradient-tech: linear-gradient(90deg, hsl(200 25% 55%), hsl(180 25% 45%));
     
     /* Enhanced shadows for depth */
-    --shadow-card: 0 8px 32px -4px hsl(220 100% 50% / 0.15), 0 2px 8px -2px hsl(220 100% 50% / 0.1);
-    --shadow-hero: 0 32px 64px -12px hsl(220 100% 50% / 0.4);
-    --shadow-tech: 0 0 20px hsl(220 100% 50% / 0.3);
+    --shadow-card: 0 8px 32px -4px hsl(200 25% 55% / 0.15), 0 2px 8px -2px hsl(200 25% 55% / 0.1);
+    --shadow-hero: 0 32px 64px -12px hsl(200 25% 55% / 0.4);
+    --shadow-tech: 0 0 20px hsl(200 25% 55% / 0.3);
     
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
