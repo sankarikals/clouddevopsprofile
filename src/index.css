@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 260 35% 65%;
+    --primary: 260 55% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 250 25% 40%;
+    --secondary: 250 40% 30%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 240 20% 35%;
-    --muted-foreground: 240 15% 70%;
+    --muted: 240 25% 25%;
+    --muted-foreground: 240 20% 75%;
 
-    --accent: 270 45% 70%;
+    --accent: 270 60% 65%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,18 +34,18 @@ All colors MUST be HSL.
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 260 35% 65%;
+    --ring: 260 55% 60%;
 
     /* Tech-focused gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(260 35% 65%), hsl(270 45% 70%), hsl(250 30% 60%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(250 15% 96%));
-    --gradient-accent: linear-gradient(135deg, hsl(260 35% 65% / 0.08), hsl(270 45% 70% / 0.12));
-    --gradient-tech: linear-gradient(90deg, hsl(260 35% 65%), hsl(270 45% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(260 55% 60%), hsl(270 60% 65%), hsl(250 50% 55%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(250 20% 95%));
+    --gradient-accent: linear-gradient(135deg, hsl(260 55% 60% / 0.1), hsl(270 60% 65% / 0.15));
+    --gradient-tech: linear-gradient(90deg, hsl(260 55% 60%), hsl(270 60% 65%));
     
     /* Enhanced shadows for depth */
-    --shadow-card: 0 8px 32px -4px hsl(260 35% 65% / 0.12), 0 2px 8px -2px hsl(260 35% 65% / 0.08);
-    --shadow-hero: 0 32px 64px -12px hsl(260 35% 65% / 0.25);
-    --shadow-tech: 0 0 20px hsl(260 35% 65% / 0.2);
+    --shadow-card: 0 8px 32px -4px hsl(260 55% 60% / 0.15), 0 2px 8px -2px hsl(260 55% 60% / 0.1);
+    --shadow-hero: 0 32px 64px -12px hsl(260 55% 60% / 0.3);
+    --shadow-tech: 0 0 20px hsl(260 55% 60% / 0.25);
     
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
