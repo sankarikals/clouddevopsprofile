@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import VoiceAssistant from "@/components/VoiceAssistant";
+import ModernEngagementTools from "@/components/ModernEngagementTools";
 import Courses from "@/components/Courses";
 import Projects from "@/components/Projects";
 import LearningInsights from "@/components/LearningInsights";
@@ -21,6 +22,7 @@ const Index = () => {
       <Hero onEnrollClick={handleContactOpen} />
       <About />
       <VoiceAssistant />
+      <ModernEngagementTools />
       <Courses onEnrollClick={handleContactOpen} />
       <Projects onEnrollClick={handleContactOpen} />
       <LearningInsights />
