@@ -1,22 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { QrCode, Smartphone, Download } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import QRCodeLib from 'qrcode';
 
 const ARBusinessCard = () => {
   const [qrGenerated, setQrGenerated] = useState(false);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
   const { toast } = useToast();
 
-  const generateARCard = () => {
-    // Generate QR code that points to AR experience
-    const arUrl = `${window.location.origin}/ar-profile`;
-    setQrGenerated(true);
-    
-    toast({
-      title: "AR Business Card Generated",
-      description: "Scan with your phone to view 3D profile in AR",
-    });
+  const generateARCard = async () => {
+    try {
+      // Generate QR code that points to AR experience
+      const arUrl = `${window.location.origin}/ar-profile`;
+      const qrDataUrl = await QRCodeLib.toDataURL(arUrl, {
+        width: 400,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+      
+      setQrCodeDataUrl(qrDataUrl);
+      setQrGenerated(true);
+      
+      toast({
+        title: "AR Business Card Generated",
+        description: "Scan with your phone to view 3D profile in AR",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate QR code",
+        variant: "destructive"
+      });
+    }
   };
 
   const downloadVCard = () => {
@@ -54,9 +74,17 @@ END:VCARD`;
           {qrGenerated ? (
             <div className="space-y-4">
               <div className="w-48 h-48 mx-auto bg-white p-4 rounded-lg shadow-tech">
-                <div className="w-full h-full bg-gradient-to-br from-primary to-accent rounded flex items-center justify-center">
-                  <QrCode className="h-32 w-32 text-white" />
-                </div>
+                {qrCodeDataUrl ? (
+                  <img 
+                    src={qrCodeDataUrl} 
+                    alt="AR Profile QR Code" 
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-primary to-accent rounded flex items-center justify-center">
+                    <QrCode className="h-32 w-32 text-white" />
+                  </div>
+                )}
               </div>
               <div className="text-sm text-muted-foreground">
                 Scan with smartphone camera to view AR profile
