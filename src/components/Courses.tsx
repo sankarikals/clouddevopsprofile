@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Clock, Users, Star, CheckCircle, ArrowRight, Settings, Lock } from "lucide-react";
+import { Clock, Star, CheckCircle, ArrowRight, Settings, Lock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import CourseManagement from "./CourseManagement";
@@ -60,13 +60,6 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
     loadCourses();
   }, []);
 
-  const scrollToContact = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const handleAdminLogin = () => {
     if (adminPassword === "akhil2308") {
       setIsAdmin(true);
@@ -87,30 +80,38 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
   };
 
   const handleCoursesUpdate = () => {
-    loadCourses(); // Reload courses from database
+    loadCourses();
   };
 
-  // Filter only published courses for display
   const publishedCourses = courses.filter(course => course.published);
 
   if (loading) {
     return (
-      <section id="courses" className="py-20">
-        <div className="container mx-auto px-4 text-center">
-          <div className="text-lg">Loading courses...</div>
+      <section id="courses" className="py-24 relative">
+        <div className="absolute inset-0 tech-bg" />
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="text-lg text-muted-foreground">Loading courses...</div>
         </div>
       </section>
     );
   }
 
   return (
-    <section id="courses" className="py-20">
-      <div className="container mx-auto px-4">
+    <section id="courses" className="py-24 relative">
+      <div className="absolute inset-0 tech-bg" />
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
           <div className="flex justify-between items-center">
             <div className="flex-1 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Transform Your Career</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="text-primary font-medium text-sm">Expert-Led Training</span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 font-display">
+                Transform Your <span className="bg-gradient-hero bg-clip-text text-transparent">Career</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Choose the perfect program to accelerate your DevOps journey
               </p>
             </div>
@@ -118,7 +119,7 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
               variant="outline"
               size="sm"
               onClick={handleManageClick}
-              className="hidden md:flex items-center gap-2"
+              className="hidden md:flex items-center gap-2 bg-secondary/50 border-border hover:bg-secondary"
             >
               <Settings className="h-4 w-4" />
               Manage Courses
@@ -130,8 +131,8 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
           {publishedCourses.map((course) => (
             <Card 
               key={course.id} 
-              className={`relative bg-gradient-card shadow-card border-0 hover:shadow-hero transition-all duration-300 ${
-                course.is_popular ? 'ring-2 ring-primary' : ''
+              className={`relative glass-card hover:border-primary/30 transition-all duration-300 ${
+                course.is_popular ? 'ring-2 ring-primary shadow-glow' : ''
               }`}
             >
               {course.is_popular && (
@@ -144,22 +145,22 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
               )}
               
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl mb-2">{course.title}</CardTitle>
-                <CardDescription className="text-base">{course.description}</CardDescription>
+                <CardTitle className="text-xl mb-2 font-display">{course.title}</CardTitle>
+                <CardDescription className="text-sm">{course.description}</CardDescription>
                 
                 <div className="flex justify-center items-center space-x-4 mt-4">
                   <div className="flex items-center text-muted-foreground">
-                    <Clock className="h-4 w-4 mr-1" />
+                    <Clock className="h-4 w-4 mr-1 text-primary" />
                     <span className="text-sm">{course.duration}</span>
                   </div>
-                  <Badge variant="outline">{course.level}</Badge>
+                  <Badge variant="outline" className="bg-secondary/50 border-border">{course.level}</Badge>
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-4">
                 <div className="text-center">
                   <div className="text-lg text-muted-foreground line-through">${Math.round(course.price * 1.5).toLocaleString()}</div>
-                  <div className="text-3xl font-bold text-primary">${course.price.toLocaleString()}</div>
+                  <div className="text-3xl font-bold text-primary font-display">${course.price.toLocaleString()}</div>
                   <div className="text-sm text-muted-foreground">One-time payment</div>
                 </div>
 
@@ -178,10 +179,9 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
                   onClick={onEnrollClick}
                   className={`w-full group ${
                     course.is_popular 
-                      ? 'bg-gradient-hero shadow-hero' 
-                      : ''
+                      ? 'bg-gradient-hero shadow-hero glow-primary' 
+                      : 'bg-secondary hover:bg-secondary/80'
                   }`}
-                  variant={course.is_popular ? 'default' : 'outline'}
                 >
                   Enroll Now
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -204,8 +204,9 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
           <Button 
             variant="outline" 
             onClick={onEnrollClick}
-            className="bg-gradient-accent"
+            className="bg-secondary/50 border-border hover:bg-secondary hover:border-primary/30"
           >
+            <Sparkles className="mr-2 h-4 w-4 text-primary" />
             Get Personalized Recommendation
           </Button>
         </div>
@@ -217,10 +218,10 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
         />
         
         <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md glass-card border-border">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Lock className="h-5 w-5" />
+              <DialogTitle className="flex items-center gap-2 font-display">
+                <Lock className="h-5 w-5 text-primary" />
                 Admin Authentication
               </DialogTitle>
             </DialogHeader>
@@ -234,9 +235,10 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
                 value={adminPassword}
                 onChange={(e) => setAdminPassword(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+                className="bg-secondary/50 border-border"
               />
               <div className="flex gap-2">
-                <Button onClick={handleAdminLogin} className="flex-1">
+                <Button onClick={handleAdminLogin} className="flex-1 bg-gradient-hero">
                   Login
                 </Button>
                 <Button 
@@ -245,7 +247,7 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
                     setShowAuthDialog(false);
                     setAdminPassword("");
                   }}
-                  className="flex-1"
+                  className="flex-1 bg-secondary/50 border-border"
                 >
                   Cancel
                 </Button>
