@@ -1,38 +1,45 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Github, Linkedin, BookOpen, MessageCircle, Mail, Phone } from "lucide-react";
+import { Linkedin, BookOpen, MessageCircle, Mail, Phone, Sparkles } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-card border-t">
+    <footer className="bg-card border-t border-border/50">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand & Description */}
           <div className="lg:col-span-2">
-            <h3 className="text-xl font-bold mb-4 text-primary">DevOps Mentor</h3>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
+                D
+              </div>
+              <span className="font-display font-bold text-xl">
+                DevOps<span className="text-primary">Mentor</span>
+              </span>
+            </div>
             <p className="text-muted-foreground mb-6 max-w-md leading-relaxed">
               Empowering the next generation of DevOps and Cloud professionals through 
               personalized mentoring, real-world projects, and industry-focused training.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-3">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="flex items-center gap-2"
+                className="bg-secondary/50 border-border hover:bg-secondary hover:border-primary/30"
                 onClick={() => window.open('https://www.linkedin.com/in/akhil2308/', '_blank')}
               >
-                <Linkedin className="h-4 w-4" />
+                <Linkedin className="h-4 w-4 mr-2" />
                 LinkedIn
               </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="flex items-center gap-2"
+                className="bg-secondary/50 border-border hover:bg-secondary hover:border-primary/30"
                 onClick={() => window.open('https://preplaced.in/profile/akhil-mittal', '_blank')}
               >
-                <BookOpen className="h-4 w-4" />
+                <BookOpen className="h-4 w-4 mr-2" />
                 Preplaced
               </Button>
             </div>
@@ -40,7 +47,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-semibold mb-4 font-display">Quick Links</h4>
             <ul className="space-y-2">
               <li>
                 <button 
@@ -87,18 +94,18 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h4 className="font-semibold mb-4">Get in Touch</h4>
+            <h4 className="font-semibold mb-4 font-display">Get in Touch</h4>
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-muted-foreground">
-                <Mail className="h-4 w-4" />
+                <Mail className="h-4 w-4 text-primary" />
                 <span className="text-sm">mentor@devopsexpert.com</span>
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground">
-                <Phone className="h-4 w-4" />
-                <span className="text-sm">+1 (555) 123-4567</span>
+                <Phone className="h-4 w-4 text-primary" />
+                <span className="text-sm">+91 725-945-2403</span>
               </div>
               <Button 
-                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                className="w-full bg-gradient-hero hover:opacity-90 glow-primary"
                 onClick={() => window.open('https://wa.me/917259452403', '_blank')}
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
@@ -108,7 +115,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <Separator className="my-8" />
+        <Separator className="my-8 bg-border/50" />
 
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm mb-4 md:mb-0">
