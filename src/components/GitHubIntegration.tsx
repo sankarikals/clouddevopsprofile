@@ -25,16 +25,24 @@ interface Repository {
   url: string;
 }
 
+const DEFAULT_USERNAME = 'am2308';
+
 const GitHubIntegration = () => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(DEFAULT_USERNAME);
   const [stats, setStats] = useState<GitHubStats | null>(null);
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [recentCommits, setRecentCommits] = useState<any[]>([]);
   const { toast } = useToast();
 
-  const fetchGitHubData = async () => {
-    if (!username.trim()) {
+  // Auto-fetch on mount
+  useEffect(() => {
+    fetchGitHubData(DEFAULT_USERNAME);
+  }, []);
+
+  const fetchGitHubData = async (user?: string) => {
+    const targetUser = user || username;
+    if (!targetUser.trim()) {
       toast({
         title: "Username Required",
         description: "Please enter a GitHub username",
@@ -46,12 +54,12 @@ const GitHubIntegration = () => {
     setIsLoading(true);
     try {
       // Fetch user data
-      const userResponse = await fetch(`https://api.github.com/users/${username}`);
+      const userResponse = await fetch(`https://api.github.com/users/${targetUser}`);
       if (!userResponse.ok) throw new Error('User not found');
       const userData = await userResponse.json();
 
       // Fetch repositories
-      const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
+      const reposResponse = await fetch(`https://api.github.com/users/${targetUser}/repos?sort=updated&per_page=6`);
       const reposData = await reposResponse.json();
 
       // Calculate stats
@@ -86,7 +94,7 @@ const GitHubIntegration = () => {
 
       toast({
         title: "GitHub Data Loaded",
-        description: `Successfully fetched data for ${username}`,
+        description: `Successfully fetched data for ${targetUser}`,
       });
     } catch (error) {
       toast({
@@ -118,7 +126,7 @@ const GitHubIntegration = () => {
             onChange={(e) => setUsername(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && fetchGitHubData()}
           />
-          <Button onClick={fetchGitHubData} disabled={isLoading}>
+          <Button onClick={() => fetchGitHubData()} disabled={isLoading}>
             {isLoading ? 'Loading...' : 'Fetch Data'}
           </Button>
         </div>
