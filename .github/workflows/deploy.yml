@@ -47,29 +47,26 @@ jobs:
           terraform_version: 1.9.5
 
       - name: Terraform Init
-        working-directory: infra/terraform
-        run: terraform init
+        run: terraform -chdir=infra/terraform init
 
       - name: Terraform Plan
-        working-directory: infra/terraform
-        run: terraform plan -input=false -out=tfplan \
-          -var "s3_bucket_name=${{ secrets.S3_BUCKET }}" \
-          -var "domain_name=${{ secrets.DOMAIN_NAME }}" \
-          -var "hosted_zone_id=${{ secrets.HOSTED_ZONE_ID }}" \
-          -var "acm_certificate_arn=${{ secrets.ACM_CERTIFICATE_ARN }}"
+        run: |
+          terraform -chdir=infra/terraform plan -input=false -out=tfplan \
+            -var "s3_bucket_name=${{ secrets.S3_BUCKET }}" \
+            -var "domain_name=${{ secrets.DOMAIN_NAME }}" \
+            -var "hosted_zone_id=${{ secrets.HOSTED_ZONE_ID }}" \
+            -var "acm_certificate_arn=${{ secrets.ACM_CERTIFICATE_ARN }}"
 
       - name: Terraform Apply
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
-        working-directory: infra/terraform
-        run: terraform apply -input=false -auto-approve tfplan
+        run: terraform -chdir=infra/terraform apply -input=false -auto-approve tfplan
 
       - name: Export outputs
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
         id: tfout
-        working-directory: infra/terraform
         run: |
-          echo "CF_DOMAIN=$(terraform output -raw cloudfront_domain)" >> $GITHUB_OUTPUT
-          echo "CF_ID=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
+          echo "CF_DOMAIN=$(terraform -chdir=infra/terraform output -raw cloudfront_domain)" >> $GITHUB_OUTPUT
+          echo "CF_ID=$(terraform -chdir=infra/terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
 
       - name: Sync to S3 (static assets long-cache, index no-cache)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
