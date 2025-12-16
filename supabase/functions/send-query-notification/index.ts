@@ -33,7 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to mentee
     const menteeEmailResponse = await resend.emails.send({
-      from: "DevOps Mentor <onboarding@resend.dev>",
+      from: "DevOps Mentor <noreply@akhilops.dev>",
       to: [queryData.email],
       subject: "Query Registered Successfully - We'll Reach Out Soon!",
       html: `
@@ -86,7 +86,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send notification to team
     const teamEmailResponse = await resend.emails.send({
-      from: "DevOps Mentor <onboarding@resend.dev>",
+      from: "DevOps Mentor <noreply@akhilops.dev>",
       to: ["akhil.mittal@akhilops.dev"], // Replace with actual team email
       subject: `New Mentee Query from ${queryData.name}`,
       html: `
