@@ -117,7 +117,7 @@ const Contact = ({ onClose }: ContactProps) => {
       `Experience: ${formData.experience} years\n` +
       `Aspirations: ${formData.aspirations}`
     );
-    window.open(`https://wa.me/917259452403?text=${message}`, '_blank');
+    window.open(`https://wa.me/447392223049?text=${message}`, '_blank');
   };
 
   return (

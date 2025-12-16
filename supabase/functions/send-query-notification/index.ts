@@ -87,7 +87,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send notification to team
     const teamEmailResponse = await resend.emails.send({
       from: "DevOps Mentor <onboarding@resend.dev>",
-      to: ["mentor@devopsexpert.com"], // Replace with actual team email
+      to: ["akhil.mittal@akhilops.dev"], // Replace with actual team email
       subject: `New Mentee Query from ${queryData.name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

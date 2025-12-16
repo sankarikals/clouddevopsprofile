@@ -78,7 +78,7 @@ const Header = ({ onContactClick }: HeaderProps) => {
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => window.open('https://wa.me/917259452403', '_blank')}
+            onClick={() => window.open('https://wa.me/447392223049', '_blank')}
             className="hidden sm:flex items-center gap-2 text-muted-foreground hover:text-foreground"
           >
             <MessageCircle className="h-4 w-4" />

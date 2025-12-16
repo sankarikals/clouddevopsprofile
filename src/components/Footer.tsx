@@ -98,7 +98,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
-                <span className="text-sm">mentor@devopsexpert.com</span>
+                <span className="text-sm">akhil.mittal@akhilops.dev</span>
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground">
                 <Phone className="h-4 w-4 text-primary" />
@@ -106,7 +106,7 @@ const Footer = () => {
               </div>
               <Button 
                 className="w-full bg-gradient-hero hover:opacity-90 glow-primary"
-                onClick={() => window.open('https://wa.me/917259452403', '_blank')}
+                onClick={() => window.open('https://wa.me/447392223049', '_blank')}
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 WhatsApp
