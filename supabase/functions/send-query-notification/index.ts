@@ -130,6 +130,27 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
+    // Check for errors in email responses
+    const menteeError = menteeEmailResponse.error;
+    const teamError = teamEmailResponse.error;
+    
+    if (menteeError || teamError) {
+      console.error("Email sending errors:", { menteeError, teamError });
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: menteeError?.message || teamError?.message || "Failed to send emails"
+        }),
+        {
+          status: 500,
+          headers: { 
+            "Content-Type": "application/json", 
+            ...corsHeaders 
+          },
+        }
+      );
+    }
+
     console.log("Emails sent successfully:", { menteeEmailResponse, teamEmailResponse });
 
     return new Response(
