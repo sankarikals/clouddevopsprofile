@@ -8,3 +8,6 @@ email_enable_confirmations = false
 
 [functions.fetch-articles]
 verify_jwt = false
+
+[functions.send-query-notification]
+verify_jwt = false
