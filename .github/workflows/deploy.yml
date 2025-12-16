@@ -74,7 +74,9 @@ jobs:
 
       - name: Invalidate CloudFront
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
-        run: aws cloudfront create-invalidation --distribution-id ${{ steps.tfout.outputs.CF_ID }} --paths "/*"
+        #run: aws cloudfront create-invalidation --distribution-id ${{ steps.tfout.outputs.CF_ID }} --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id "E1YN3EKUMLDYZB" --paths "/*"
+
 
       - name: Print CloudFront URL
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
