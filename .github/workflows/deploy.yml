@@ -59,12 +59,12 @@ jobs:
       #   if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
       #   run: terraform -chdir=infra/terraform apply -input=false -auto-approve tfplan
 
-      - name: Export outputs
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
-        id: tfout
-        run: |
-          echo "CF_DOMAIN=$(terraform -chdir=infra/terraform output -raw cloudfront_domain)" >> $GITHUB_OUTPUT
-          echo "CF_ID=$(terraform -chdir=infra/terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
+      # - name: Export outputs
+      #   if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
+      #   id: tfout
+      #   run: |
+      #     echo "CF_DOMAIN=$(terraform -chdir=infra/terraform output -raw cloudfront_domain)" >> $GITHUB_OUTPUT
+      #     echo "CF_ID=$(terraform -chdir=infra/terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
 
       - name: Sync to S3 (static assets long-cache, index no-cache)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply == true }}
