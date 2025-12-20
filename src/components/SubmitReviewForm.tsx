@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Star, X } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SubmitReviewFormProps {
   isOpen: boolean;
@@ -27,23 +28,40 @@ const SubmitReviewForm = ({ isOpen, onClose }: SubmitReviewFormProps) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate submission - in production this would go to a database
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast.success("Review Submitted!", {
-      description: "Thank you for your feedback. Your review will be visible once approved by our team.",
-    });
-    
-    setNewReview({
-      name: "",
-      role: "",
-      company: "",
-      rating: 5,
-      review: "",
-      course: ""
-    });
-    setIsSubmitting(false);
-    onClose();
+    try {
+      const { error } = await supabase
+        .from("reviews")
+        .insert({
+          name: newReview.name,
+          role: newReview.role,
+          company: newReview.company,
+          rating: newReview.rating,
+          review: newReview.review,
+          course: newReview.course,
+          status: 'pending'
+        });
+
+      if (error) throw error;
+      
+      toast.success("Review Submitted!", {
+        description: "Thank you for your feedback. Your review has been submitted successfully.",
+      });
+      
+      setNewReview({
+        name: "",
+        role: "",
+        company: "",
+        rating: 5,
+        review: "",
+        course: ""
+      });
+      onClose();
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      toast.error("Failed to submit review. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isOpen) return null;

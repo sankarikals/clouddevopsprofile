@@ -150,7 +150,7 @@ const Admin = () => {
           </TabsContent>
           
           <TabsContent value="reviews">
-            <ReviewManagement />
+            <ReviewManagement adminPassword={ADMIN_PASSWORD} />
           </TabsContent>
         </Tabs>
       </div>

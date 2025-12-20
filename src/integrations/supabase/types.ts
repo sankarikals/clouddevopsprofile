@@ -194,6 +194,45 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          company: string
+          course: string
+          created_at: string
+          id: string
+          name: string
+          rating: number
+          review: string
+          role: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company: string
+          course: string
+          created_at?: string
+          id?: string
+          name: string
+          rating: number
+          review: string
+          role: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string
+          course?: string
+          created_at?: string
+          id?: string
+          name?: string
+          rating?: number
+          review?: string
+          role?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

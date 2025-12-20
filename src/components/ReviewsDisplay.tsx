@@ -1,18 +1,20 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Star, Quote } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface Review {
-  id: number;
+  id: string;
   name: string;
   role: string;
   company: string;
   rating: number;
   review: string;
   course: string;
-  date: string;
+  created_at: string;
   status: 'pending' | 'approved' | 'rejected';
 }
 
@@ -20,44 +22,62 @@ interface ReviewsDisplayProps {
   onSubmitClick: () => void;
 }
 
-// Sample approved reviews for display
-const approvedReviews: Review[] = [
+// Fallback reviews for when database is empty
+const fallbackReviews: Review[] = [
   {
-    id: 1,
+    id: "1",
     name: "Priya Sharma",
     role: "DevOps Engineer",
     company: "Amazon",
     rating: 5,
     review: "Akhil's mentoring transformed my career completely. The real-time projects and interview preparation were exactly what I needed to land my dream job at Amazon. His practical approach and industry insights are unmatched!",
     course: "Complete DevOps Mastery",
-    date: "2024-01-15",
+    created_at: "2024-01-15",
     status: 'approved'
   },
   {
-    id: 2,
+    id: "2",
     name: "Rahul Kumar",
     role: "Cloud Engineer",
     company: "Microsoft",
     rating: 5,
     review: "Best investment I made for my career! Akhil's interview coaching program helped me crack Microsoft's technical rounds. His mock interviews and personalized feedback were game-changers.",
     course: "Interview Mastery Program",
-    date: "2024-01-10",
+    created_at: "2024-01-10",
     status: 'approved'
   },
   {
-    id: 3,
+    id: "3",
     name: "Anjali Patel",
     role: "Site Reliability Engineer",
     company: "Google",
     rating: 5,
     review: "The real-time DevOps projects course gave me hands-on experience with industry-standard tools. Akhil's guidance helped me transition from development to DevOps seamlessly. Now I'm working at Google!",
     course: "Real-Time DevOps Projects",
-    date: "2024-01-05",
+    created_at: "2024-01-05",
     status: 'approved'
   }
 ];
 
 const ReviewsDisplay = ({ onSubmitClick }: ReviewsDisplayProps) => {
+  const [reviews, setReviews] = useState<Review[]>(fallbackReviews);
+
+  useEffect(() => {
+    const fetchApprovedReviews = async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("*")
+        .eq("status", "approved")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        setReviews(data as Review[]);
+      }
+    };
+
+    fetchApprovedReviews();
+  }, []);
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star 
@@ -79,7 +99,7 @@ const ReviewsDisplay = ({ onSubmitClick }: ReviewsDisplayProps) => {
 
         {/* Reviews Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {approvedReviews.map((review) => (
+          {reviews.slice(0, 6).map((review) => (
             <Card key={review.id} className="bg-gradient-card shadow-card border-0 hover:shadow-hero transition-all duration-300">
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -127,7 +147,7 @@ const ReviewsDisplay = ({ onSubmitClick }: ReviewsDisplayProps) => {
             </Button>
             <Button 
               className="bg-gradient-hero shadow-hero"
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={onSubmitClick}
             >
               Start Your Journey
             </Button>
