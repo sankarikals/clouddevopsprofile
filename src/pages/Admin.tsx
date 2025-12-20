@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import BlogManagement from "@/components/BlogManagement";
 import ProjectManagement from "@/components/ProjectManagement";
 import CourseManagement from "@/components/CourseManagement";
-import Reviews from "@/components/Reviews";
+import ReviewManagement from "@/components/ReviewManagement";
 import { ArrowLeft, Lock, LogOut } from "lucide-react";
 import { toast } from "sonner";
 
@@ -150,7 +150,7 @@ const Admin = () => {
           </TabsContent>
           
           <TabsContent value="reviews">
-            <Reviews />
+            <ReviewManagement />
           </TabsContent>
         </Tabs>
       </div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import ARBusinessCard from './ARBusinessCard';
-import VoiceToCodeAssistant from './VoiceToCodeAssistant';
 import GitHubIntegration from './GitHubIntegration';
 import TechNewsCommentary from './TechNewsCommentary';
 
@@ -18,9 +17,8 @@ const ModernEngagementTools = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <ARBusinessCard />
-          <VoiceToCodeAssistant />
           <GitHubIntegration />
           <TechNewsCommentary />
         </div>
@@ -35,9 +33,6 @@ const ModernEngagementTools = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <div className="bg-primary/10 px-4 py-2 rounded-full text-sm font-medium text-primary">
                 AR/VR Integration
-              </div>
-              <div className="bg-secondary/10 px-4 py-2 rounded-full text-sm font-medium text-secondary">
-                Voice AI Technology
               </div>
               <div className="bg-accent/10 px-4 py-2 rounded-full text-sm font-medium text-accent">
                 Real-time Data Analytics
