@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Settings, Sparkles } from "lucide-react";
+import { MessageCircle, Settings, Calendar } from "lucide-react";
 
 interface HeaderProps {
   onContactClick?: () => void;
@@ -85,11 +85,11 @@ const Header = ({ onContactClick }: HeaderProps) => {
             WhatsApp
           </Button>
           <Button 
-            onClick={onContactClick}
+            onClick={() => window.open('https://calendly.com/akhilmittal510', '_blank')}
             className="bg-gradient-hero hover:opacity-90 shadow-hero glow-primary"
           >
-            <Sparkles className="mr-2 h-4 w-4" />
-            Get Started
+            <Calendar className="mr-2 h-4 w-4" />
+            Book Consultation
           </Button>
         </div>
       </div>
