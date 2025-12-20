@@ -98,7 +98,7 @@ const Hero = ({ onEnrollClick }: HeroProps) => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Button 
               size="lg" 
-              onClick={() => scrollToSection('voice-assistant')}
+              onClick={() => window.open('https://calendly.com/akhilmittal510', '_blank')}
               className="bg-gradient-hero hover:opacity-90 shadow-hero text-lg px-8 py-6 group glow-primary"
             >
               <Sparkles className="mr-2 h-5 w-5" />
