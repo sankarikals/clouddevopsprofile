@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.send-query-notification]
 verify_jwt = false
+
+[functions.admin-reviews]
+verify_jwt = false

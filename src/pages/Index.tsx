@@ -26,7 +26,7 @@ const Index = () => {
       <Courses onEnrollClick={handleContactOpen} />
       <Projects onEnrollClick={handleContactOpen} />
       <LearningInsights />
-      <ReviewsDisplay onSubmitClick={() => setShowReviewForm(true)} />
+      <ReviewsDisplay onSubmitClick={() => setShowReviewForm(true)} onConsultationClick={handleContactOpen} />
       <SubmitReviewForm isOpen={showReviewForm} onClose={() => setShowReviewForm(false)} />
       <div id="contact">
         {showContactForm && <Contact onClose={() => setShowContactForm(false)} />}
