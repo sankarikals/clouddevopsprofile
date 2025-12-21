@@ -20,6 +20,7 @@ export interface Review {
 
 interface ReviewsDisplayProps {
   onSubmitClick: () => void;
+  onConsultationClick: () => void;
 }
 
 // Fallback reviews for when database is empty
@@ -59,7 +60,7 @@ const fallbackReviews: Review[] = [
   }
 ];
 
-const ReviewsDisplay = ({ onSubmitClick }: ReviewsDisplayProps) => {
+const ReviewsDisplay = ({ onSubmitClick, onConsultationClick }: ReviewsDisplayProps) => {
   const [reviews, setReviews] = useState<Review[]>(fallbackReviews);
 
   useEffect(() => {
@@ -147,7 +148,7 @@ const ReviewsDisplay = ({ onSubmitClick }: ReviewsDisplayProps) => {
             </Button>
             <Button 
               className="bg-gradient-hero shadow-hero"
-              onClick={onSubmitClick}
+              onClick={onConsultationClick}
             >
               Start Your Journey
             </Button>
