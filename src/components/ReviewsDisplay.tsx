@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Review {
@@ -60,8 +60,11 @@ const fallbackReviews: Review[] = [
   }
 ];
 
+const REVIEWS_PER_PAGE = 6;
+
 const ReviewsDisplay = ({ onSubmitClick, onConsultationClick }: ReviewsDisplayProps) => {
   const [reviews, setReviews] = useState<Review[]>(fallbackReviews);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchApprovedReviews = async () => {
@@ -78,6 +81,18 @@ const ReviewsDisplay = ({ onSubmitClick, onConsultationClick }: ReviewsDisplayPr
 
     fetchApprovedReviews();
   }, []);
+
+  const totalPages = Math.ceil(reviews.length / REVIEWS_PER_PAGE);
+  const startIndex = (currentPage - 1) * REVIEWS_PER_PAGE;
+  const currentReviews = reviews.slice(startIndex, startIndex + REVIEWS_PER_PAGE);
+
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -100,7 +115,7 @@ const ReviewsDisplay = ({ onSubmitClick, onConsultationClick }: ReviewsDisplayPr
 
         {/* Reviews Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {reviews.slice(0, 6).map((review) => (
+          {currentReviews.map((review) => (
             <Card key={review.id} className="bg-gradient-card shadow-card border-0 hover:shadow-hero transition-all duration-300">
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -133,6 +148,31 @@ const ReviewsDisplay = ({ onSubmitClick, onConsultationClick }: ReviewsDisplayPr
             </Card>
           ))}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-8">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
 
         {/* Call to Action */}
         <div className="text-center mt-12">
