@@ -109,7 +109,7 @@ const Courses = ({ onEnrollClick }: CoursesProps) => {
                 <span className="text-primary font-medium text-sm">Expert-Led Training</span>
               </div>
               <h2 className="text-3xl md:text-5xl font-bold mb-4 font-display">
-                Transform Your <span className="bg-gradient-hero bg-clip-text text-transparent">Career</span>
+                Make Your <span className="bg-gradient-hero bg-clip-text text-transparent">Career</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Choose the perfect program to accelerate your DevOps journey
