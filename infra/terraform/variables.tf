@@ -7,6 +7,7 @@ variable "app_region" {
 variable "s3_bucket_name" {
   description = "Name of the S3 bucket to host the static site"
   type        = string
+  default     = ""
 }
 
 variable "domain_name" {
