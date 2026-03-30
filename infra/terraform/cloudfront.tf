@@ -2,9 +2,12 @@ locals {
   use_existing_cert = var.acm_certificate_arn != ""
   use_alias         = var.domain_name != "" && (local.use_existing_cert || var.hosted_zone_id != "")
 }
-
 resource "aws_cloudfront_origin_access_control" "oac" {
-  name                              = "${var.s3_bucket_name}-oac"
+  name = "my-oac"
+}
+resource "aws_cloudfront_origin_access_control" "oac" {
+  name                              = "my-oac-${random_id.oac_suffix.hex}"
+  # name                              = "${var.s3_bucket_name}-oac"
   description                       = "OAC for S3 origin"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
