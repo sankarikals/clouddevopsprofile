@@ -2,8 +2,8 @@ locals {
   use_existing_cert = var.acm_certificate_arn != ""
   use_alias         = var.domain_name != "" && (local.use_existing_cert || var.hosted_zone_id != "")
 }
-resource "aws_cloudfront_origin_access_control" "oac" {
-  name = "my-oac"
+resource "random_id" "oac_suffix" {
+  byte_length = 4
 }
 resource "aws_cloudfront_origin_access_control" "oac" {
   name                              = "my-oac-${random_id.oac_suffix.hex}"
