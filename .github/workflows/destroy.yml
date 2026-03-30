@@ -4,9 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       confirm:
-        description: "Type DESTROY to confirm infrastructure deletion"
+        description: "Type DESTROY to confirm"
         required: true
-        default: ""
 
 permissions:
   id-token: write
@@ -19,18 +18,17 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
 
     steps:
-      # ✅ Safety check
       - name: Confirm destroy
         run: |
           if [ "${{ github.event.inputs.confirm }}" != "DESTROY" ]; then
-            echo "❌ You must type DESTROY to proceed."
+            echo "❌ Confirmation failed"
             exit 1
           fi
 
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials (OIDC)
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
@@ -38,30 +36,10 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.5
 
       - name: Terraform Init
         run: terraform -chdir=infra/terraform init
 
-      # ✅ Destroy directly (no tfplan confusion)
+      # 🔥 No variables needed now
       - name: Terraform Destroy
-        run: |
-          terraform -chdir=infra/terraform destroy -auto-approve \
-            -var "domain_name=${{ secrets.DOMAIN_NAME }}" \
-            -var "hosted_zone_id=${{ secrets.HOSTED_ZONE_ID }}" \
-            -var "acm_certificate_arn=${{ secrets.ACM_CERTIFICATE_ARN }}"
-
-      # ✅ Optional safe cleanup
-      - name: Cleanup S3 (if still exists)
-        if: always()
-        run: |
-          echo "Checking S3 bucket cleanup..."
-          BUCKET=$(terraform -chdir=infra/terraform output -raw bucket_name 2>/dev/null || echo "")
-
-          if [ -n "$BUCKET" ]; then
-            echo "Cleaning bucket: $BUCKET"
-            aws s3 rm s3://$BUCKET --recursive || true
-          else
-            echo "Bucket already removed or not found"
-          fi
+        run: terraform -chdir=infra/terraform destroy -auto-approve
